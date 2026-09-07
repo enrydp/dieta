@@ -124,9 +124,12 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 <CuteAvatar
                   gender={profile.gender}
-                  avatarStyle={profile.avatarStyle}
+                  weightKg={profile.weightKg}
+                  heightCm={profile.heightCm}
+                  age={profile.age}
                   name={profile.name}
                   size="md"
+                  mode="bust"
                   showBadge={true}
                 />
                 <div className="flex flex-col text-left">

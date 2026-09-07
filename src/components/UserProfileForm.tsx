@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { UserProfile, Gender, ActivityLevel, FitnessGoal, DietType, PathologyId } from '../types/diet';
 import { PATHOLOGIES_DATA } from '../data/pathologies';
 import { calculateBMI, calculateBodyFat, calculateMacroTargets } from '../utils/calculations';
-import { User, Activity, HeartPulse, CheckCircle, Save, Sparkles, Scale, Smile } from 'lucide-react';
+import { User, Activity, HeartPulse, CheckCircle, Save, Sparkles, Scale } from 'lucide-react';
 import { CuteAvatar } from './CuteAvatar';
-import { AVATAR_OPTIONS } from '../data/avatars';
 
 interface UserProfileFormProps {
   initialProfile: UserProfile;
@@ -98,68 +97,70 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = ({
           <span>1. Misure Antropometriche & Avatar Personale</span>
         </h3>
 
-        {/* Anteprima e Scelta Avatar Simpatico Stile Cartoon */}
-        <div className="p-5 bg-gradient-to-r from-emerald-50/80 via-teal-50/50 to-sky-50/60 rounded-3xl border-2 border-emerald-200/80 shadow-xs flex flex-col md:flex-row items-center gap-5">
+        {/* Anteprima Avatar a Figura Intera Dinamico (calibrato su genere, peso, altezza ed età) */}
+        <div className="p-5 sm:p-6 bg-gradient-to-br from-emerald-50/90 via-teal-50/60 to-sky-50/70 rounded-3xl border-2 border-emerald-200/90 shadow-sm flex flex-col md:flex-row items-center gap-6">
           
-          <div className="flex items-center gap-4 shrink-0">
-            <div className="relative">
-              <CuteAvatar
-                gender={profile.gender}
-                avatarStyle={profile.avatarStyle}
-                name={profile.name}
-                size="xl"
-                showBadge={true}
-              />
-              <span className="absolute -top-1 -right-1 bg-amber-400 text-slate-900 text-[10px] font-black px-1.5 py-0.5 rounded-full shadow-xs border border-white">
-                PRO
-              </span>
-            </div>
-            <div>
-              <span className="text-[11px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-100/80 px-2.5 py-0.5 rounded-md">
-                Il Tuo Personaggio Cartoon
-              </span>
-              <div className="text-xl font-black text-slate-900 mt-1">
-                {profile.name && profile.name.trim() ? profile.name : 'Il Tuo Nome'}
-              </div>
-              <div className="text-xs text-slate-600 font-semibold mt-0.5">
-                {profile.gender === 'male' ? 'Uomo' : 'Donna'} • {profile.age || '--'} anni • {profile.weightKg || '--'} kg
-              </div>
-            </div>
+          {/* Avatar a Figura Intera */}
+          <div className="flex flex-col items-center shrink-0 bg-white/80 backdrop-blur-xs p-4 rounded-2xl border border-emerald-200/60 shadow-xs">
+            <CuteAvatar
+              gender={profile.gender}
+              weightKg={profile.weightKg}
+              heightCm={profile.heightCm}
+              age={profile.age}
+              name={profile.name}
+              size="full"
+              mode="full"
+              showBadge={true}
+            />
+            <span className="text-[10px] text-slate-500 font-bold mt-2 uppercase tracking-wider">
+              Figura Intera Cartoon
+            </span>
           </div>
 
-          <div className="flex-1 w-full border-t md:border-t-0 md:border-l border-emerald-200/80 md:pl-5 pt-4 md:pt-0">
-            <div className="text-xs font-black text-slate-800 mb-2 flex items-center gap-1.5">
-              <Smile className="w-4 h-4 text-emerald-600" />
-              <span>Scegli il tuo stile Cartoon preferito (visibile in alto in tutte le schermate):</span>
+          {/* Dettagli dell'Avatar Generato Dinamicamente */}
+          <div className="flex-1 text-center md:text-left space-y-3">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-100 text-emerald-900 rounded-full text-xs font-black tracking-wide border border-emerald-300/80">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-700 animate-pulse" />
+              <span>Avatar Intelligente Personalizzato</span>
             </div>
-            <div className="flex gap-2.5 overflow-x-auto pb-2 no-scrollbar">
-              {AVATAR_OPTIONS.filter(a => a.gender === 'any' || a.gender === profile.gender).map(av => {
-                const isSelected = (profile.avatarStyle === av.id) || (!profile.avatarStyle && av.gender === profile.gender);
-                return (
-                  <button
-                    key={av.id}
-                    type="button"
-                    onClick={() => handleFieldChange('avatarStyle', av.id)}
-                    className={`flex items-center gap-2.5 px-3 py-2 rounded-2xl border text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
-                      isSelected
-                        ? 'border-emerald-600 bg-emerald-100/90 text-emerald-950 shadow-md ring-2 ring-emerald-500/30 scale-102'
-                        : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300'
-                    }`}
-                  >
-                    <CuteAvatar
-                      gender={av.gender === 'female' ? 'female' : 'male'}
-                      avatarStyle={av.id}
-                      size="sm"
-                    />
-                    <div className="text-left">
-                      <div className="font-extrabold text-xs">{av.name}</div>
-                      <div className="text-[10px] text-slate-500 font-medium">
-                        {av.label.split('(')[1]?.replace(')', '') || ''}
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
+
+            <h4 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+              {profile.name && profile.name.trim() ? profile.name : 'Il Tuo Avatar Personale'}
+            </h4>
+
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-xl">
+              Questo personaggio a <strong>figura intera</strong> viene generato e proporzionato <strong>automaticamente</strong> in base alle tue caratteristiche fisiche. Cambiando sesso, peso, altezza o età qui sotto, l'illustrazione si aggiorna in tempo reale!
+            </p>
+
+            {/* Indicatori Dinamici */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+              <div className="p-2.5 bg-white rounded-xl border border-slate-200/80 shadow-2xs">
+                <div className="text-[10px] text-slate-500 font-semibold uppercase">Genere</div>
+                <div className="text-xs font-black text-slate-800 mt-0.5">
+                  {profile.gender === 'male' ? '👨 Uomo' : '👩 Donna'}
+                </div>
+              </div>
+
+              <div className="p-2.5 bg-white rounded-xl border border-slate-200/80 shadow-2xs">
+                <div className="text-[10px] text-slate-500 font-semibold uppercase">Corporatura</div>
+                <div className="text-xs font-black text-emerald-700 mt-0.5">
+                  {bmiCategory}
+                </div>
+              </div>
+
+              <div className="p-2.5 bg-white rounded-xl border border-slate-200/80 shadow-2xs">
+                <div className="text-[10px] text-slate-500 font-semibold uppercase">Fascia Età</div>
+                <div className="text-xs font-black text-slate-800 mt-0.5">
+                  {profile.age < 30 ? '⚡ Giovane' : profile.age > 55 ? '👓 Senior' : '🌟 Adulto'}
+                </div>
+              </div>
+
+              <div className="p-2.5 bg-white rounded-xl border border-slate-200/80 shadow-2xs">
+                <div className="text-[10px] text-slate-500 font-semibold uppercase">Misure</div>
+                <div className="text-xs font-black text-slate-800 mt-0.5">
+                  {profile.weightKg || '--'}kg • {profile.heightCm || '--'}cm
+                </div>
+              </div>
             </div>
           </div>
 
