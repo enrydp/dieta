@@ -1,11 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { DayDietPlan, UserProfile, MacroTargets } from '../types/diet';
 import { calculateMealTotals, calculateDayTotals } from '../utils/planGenerator';
 import { PATHOLOGIES_DATA } from '../data/pathologies';
 import { ALLERGIES_DATA } from '../data/allergies';
-import { X, Printer, Download, FileText, Loader2, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { X, Printer, Download, FileText, Loader2, CheckCircle2 } from 'lucide-react';
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 
 interface PrintExportModalProps {
   isOpen: boolean;
@@ -16,6 +15,377 @@ interface PrintExportModalProps {
   weekPlan: DayDietPlan[];
 }
 
+// ── Costanti layout A4 ────────────────────────────────────────────────
+const PAGE_W = 210;    // mm larghezza A4
+const PAGE_H = 297;    // mm altezza A4
+const MARGIN = 14;     // mm margine laterale
+const CONTENT_W = PAGE_W - MARGIN * 2;
+const BOTTOM_LIMIT = PAGE_H - 16; // zona piede pagina
+
+// ── Helper: testo a capo automatico entro maxWidth ─────────────────────
+function splitText(doc: jsPDF, text: string, maxWidth: number): string[] {
+  return doc.splitTextToSize(text, maxWidth);
+}
+
+// ── Helper: aggiunge una nuova pagina con header compatto ─────────────
+function addPage(doc: jsPDF, pageNum: { v: number }, profile?: UserProfile, headerTitle?: string): number {
+  doc.addPage();
+  pageNum.v += 1;
+
+  // Barra superiore verde compatta per pagine successive
+  doc.setFillColor(5, 150, 105);
+  doc.rect(0, 0, PAGE_W, 9, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8.5);
+  doc.setTextColor(255, 255, 255);
+  doc.text('NUTRIPLAN', MARGIN, 6.2);
+  doc.setFontSize(6.5);
+  doc.setFont('helvetica', 'normal');
+  doc.text('By Barone soft', MARGIN + 22, 6.2);
+
+  const userName = profile?.name && profile.name.trim() ? profile.name.trim() : 'Piano Nutrizionale';
+  const rightTitle = headerTitle ? `${headerTitle} • ${userName}` : userName;
+  doc.text(rightTitle, PAGE_W - MARGIN, 6.2, { align: 'right' });
+
+  return 15;
+}
+
+// ── Helper: assicura che ci sia spazio sufficiente ─────────────────────
+function ensureSpace(
+  doc: jsPDF,
+  y: number,
+  neededMm: number,
+  pageNum: { v: number },
+  profile?: UserProfile,
+  headerTitle?: string
+): number {
+  if (y + neededMm > BOTTOM_LIMIT) {
+    return addPage(doc, pageNum, profile, headerTitle);
+  }
+  return y;
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// Generazione PDF puramente via API jsPDF (senza html2canvas)
+// ─────────────────────────────────────────────────────────────────────
+function generatePDF(
+  profile: UserProfile,
+  targets: MacroTargets,
+  daysToPrint: DayDietPlan[],
+  mode: 'current' | 'week'
+): jsPDF {
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const pageNum = { v: 1 };
+
+  let y = MARGIN;
+
+  // ── INTESTAZIONE ────────────────────────────────────────────────────
+  // Barra verde in cima alla prima pagina
+  doc.setFillColor(5, 150, 105);  // emerald-600
+  doc.rect(0, 0, PAGE_W, 12, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.setTextColor(255, 255, 255);
+  doc.text('NUTRIPLAN', MARGIN, 8);
+  doc.setFontSize(7.5);
+  doc.setFont('helvetica', 'normal');
+  doc.text('By Barone soft', MARGIN + 31, 8);
+
+  const modeLabel = mode === 'current'
+    ? `Giornata: ${daysToPrint[0]?.dayName || 'Oggi'}`
+    : 'Settimana Completa (7 Giorni)';
+  doc.text(`Piano Alimentare Personalizzato • ${modeLabel}`, PAGE_W - MARGIN, 8, { align: 'right' });
+
+  y = 18;
+
+  // ── DATI UTENTE ──────────────────────────────────────────────────────
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(15, 23, 42);
+  doc.text(profile.name && profile.name.trim() ? profile.name.trim() : 'Paziente / Utente', MARGIN, y);
+
+  const infoRight: string[] = [];
+  if (profile.age > 0) infoRight.push(`${profile.age} anni`);
+  infoRight.push(profile.gender === 'male' ? 'Uomo' : 'Donna');
+  if (profile.heightCm > 0) infoRight.push(`${profile.heightCm} cm`);
+  if (profile.weightKg > 0) infoRight.push(`${profile.weightKg} kg`);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8.5);
+  doc.setTextColor(71, 85, 105);
+  doc.text(infoRight.join(' • '), PAGE_W - MARGIN, y, { align: 'right' });
+
+  y += 5;
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8.5);
+  doc.setTextColor(5, 150, 105);
+  doc.text(`BMI: ${targets.bmi > 0 ? targets.bmi : '--'} (${targets.bmiCategory})`, PAGE_W - MARGIN, y, { align: 'right' });
+
+  // Linea separatrice
+  y += 3;
+  doc.setDrawColor(5, 150, 105);
+  doc.setLineWidth(0.6);
+  doc.line(MARGIN, y, PAGE_W - MARGIN, y);
+  y += 5;
+
+  // ── TARGET MACRO ────────────────────────────────────────────────────
+  const boxW = CONTENT_W / 4 - 2;
+  const macros = [
+    { label: 'Calorie', value: `${targets.targetCalories} kcal`, color: [15, 23, 42] as [number, number, number] },
+    { label: 'Proteine', value: `${targets.proteinGrams} g`, color: [29, 78, 216] as [number, number, number] },
+    { label: 'Carboidrati', value: `${targets.carbsGrams} g`, color: [180, 83, 9] as [number, number, number] },
+    { label: 'Grassi', value: `${targets.fatsGrams} g`, color: [190, 18, 60] as [number, number, number] },
+  ];
+
+  macros.forEach((m, i) => {
+    const bx = MARGIN + i * (boxW + 2.7);
+    doc.setFillColor(248, 250, 252);
+    doc.setDrawColor(226, 232, 240);
+    doc.setLineWidth(0.3);
+    doc.roundedRect(bx, y, boxW, 13, 2, 2, 'FD');
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    doc.setTextColor(100, 116, 139);
+    doc.text(m.label.toUpperCase(), bx + boxW / 2, y + 4, { align: 'center' });
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9.5);
+    doc.setTextColor(...m.color);
+    doc.text(m.value, bx + boxW / 2, y + 10, { align: 'center' });
+  });
+
+  y += 18;
+
+  // ── QUADRO CLINICO & ALLERGIE ────────────────────────────────────────
+  const hasPathologies = profile.pathologies && profile.pathologies.length > 0;
+  const hasAllergies = (profile.allergies && profile.allergies.length > 0) ||
+    (profile.customExcludedFoods && profile.customExcludedFoods.length > 0);
+
+  if (hasPathologies || hasAllergies) {
+    // 1. Pre-calcolo dell'altezza necessaria per il box
+    let contentHeight = 4;
+    let pathLines: string[] = [];
+    let allergyLines: string[] = [];
+
+    if (hasPathologies) {
+      contentHeight += 4;
+      const pathNames = (profile.pathologies || []).map(pid => {
+        const p = PATHOLOGIES_DATA[pid];
+        return p ? p.name : pid;
+      }).join(' • ');
+      pathLines = splitText(doc, pathNames, CONTENT_W - 6);
+      contentHeight += pathLines.length * 3.5 + 2;
+    }
+
+    if (hasAllergies) {
+      contentHeight += 4;
+      const allergyNames = [
+        ...(profile.allergies || []).map(aid => {
+          const a = ALLERGIES_DATA.find(item => item.id === aid);
+          return a ? a.name : aid;
+        }),
+        ...(profile.customExcludedFoods || [])
+      ].join(' • ');
+      allergyLines = splitText(doc, allergyNames, CONTENT_W - 6);
+      contentHeight += allergyLines.length * 3.5 + 1;
+    }
+
+    // 2. Disegna il box PRIMA del testo (per evitare che il fill lo copra)
+    doc.setFillColor(255, 251, 235);
+    doc.setDrawColor(252, 211, 77);
+    doc.setLineWidth(0.3);
+    doc.roundedRect(MARGIN, y, CONTENT_W, contentHeight, 2, 2, 'FD');
+
+    // 3. Stampa il testo sopra il box
+    let textY = y + 4;
+    if (hasPathologies) {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7.5);
+      doc.setTextColor(15, 23, 42);
+      doc.text('Patologie & Condizioni Cliniche Rispettate:', MARGIN + 3, textY);
+      textY += 3.5;
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7);
+      doc.setTextColor(71, 85, 105);
+      pathLines.forEach(line => {
+        doc.text(line, MARGIN + 3, textY);
+        textY += 3.5;
+      });
+      textY += 2;
+    }
+
+    if (hasAllergies) {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7.5);
+      doc.setTextColor(15, 23, 42);
+      doc.text('Allergie & Alimenti Esclusi:', MARGIN + 3, textY);
+      textY += 3.5;
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7);
+      doc.setTextColor(153, 27, 27);
+      allergyLines.forEach(line => {
+        doc.text(line, MARGIN + 3, textY);
+        textY += 3.5;
+      });
+    }
+
+    y += contentHeight + 4;
+  }
+
+  // ── GIORNI / PASTI ────────────────────────────────────────────────────
+  daysToPrint.forEach((day, dayIndex) => {
+    const dayTotals = calculateDayTotals(day);
+
+    if (mode === 'week' && dayIndex > 0) {
+      // In modalità settimana ogni giorno inizia su una pagina dedicata pulita
+      y = addPage(doc, pageNum, profile, `Piano Settimanale • ${day.dayName}`);
+    } else {
+      y = ensureSpace(doc, y, 14, pageNum, profile, day.dayName);
+    }
+
+    // Header giorno
+    doc.setFillColor(236, 253, 245); // emerald-50
+    doc.setDrawColor(167, 243, 208); // emerald-200
+    doc.setLineWidth(0.3);
+    doc.roundedRect(MARGIN, y, CONTENT_W, 9.5, 2, 2, 'FD');
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9.5);
+    doc.setTextColor(5, 150, 105);
+    doc.text(day.dayName, MARGIN + 4, y + 6.2);
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(51, 65, 85);
+    const totLabel = `Totale: ${dayTotals.calories} kcal  |  P: ${dayTotals.protein}g • C: ${dayTotals.carbs}g • G: ${dayTotals.fats}g`;
+    doc.text(totLabel, PAGE_W - MARGIN - 3, y + 6.2, { align: 'right' });
+
+    y += 12;
+
+    // Pasti
+    day.meals.forEach(meal => {
+      const mealTot = calculateMealTotals(meal.foods);
+
+      // Altezza stimata del blocco pasto (header + righe alimenti)
+      const estimatedHeight = 8 + meal.foods.length * 5 + 3;
+      y = ensureSpace(doc, y, estimatedHeight, pageNum, profile, day.dayName);
+
+      // Header pasto
+      doc.setFillColor(248, 250, 252);
+      doc.setDrawColor(226, 232, 240);
+      doc.setLineWidth(0.25);
+      doc.roundedRect(MARGIN, y, CONTENT_W, 7, 1.5, 1.5, 'FD');
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(15, 23, 42);
+      doc.text(meal.name, MARGIN + 3, y + 4.8);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(6.5);
+      doc.setTextColor(100, 116, 139);
+      doc.text(`(${meal.timeSlot})`, MARGIN + 4 + doc.getTextWidth(meal.name), y + 4.8);
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7.5);
+      doc.setTextColor(5, 150, 105);
+      const mealInfoText = `${mealTot.calories} kcal (P: ${mealTot.protein}g • C: ${mealTot.carbs}g • G: ${mealTot.fats}g)`;
+      doc.text(mealInfoText, PAGE_W - MARGIN - 3, y + 4.8, { align: 'right' });
+
+      y += 8.5;
+
+      // Righe alimenti
+      meal.foods.forEach((f, fi) => {
+        y = ensureSpace(doc, y, 5.2, pageNum, profile, day.dayName);
+
+        if (fi % 2 === 0) {
+          doc.setFillColor(250, 251, 252);
+          doc.rect(MARGIN, y - 0.5, CONTENT_W, 5, 'F');
+        }
+
+        // Calcolo kcal dell'alimento
+        const itemKcal = Math.round((f.food.calories * f.grams) / 100);
+
+        // Troncamento nome alimento se troppo lungo per evitare sovrapposizioni
+        let foodName = f.food.name;
+        const maxTextW = CONTENT_W - 42;
+        if (doc.getTextWidth(foodName) > maxTextW) {
+          while (doc.getTextWidth(foodName + '...') > maxTextW && foodName.length > 0) {
+            foodName = foodName.slice(0, -1);
+          }
+          foodName += '...';
+        }
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(7.5);
+        doc.setTextColor(30, 41, 59);
+        doc.text(foodName, MARGIN + 4, y + 3.3);
+
+        // Grammi alimento
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(7.5);
+        doc.setTextColor(5, 150, 105);
+        doc.text(`${f.grams} g`, PAGE_W - MARGIN - 23, y + 3.3, { align: 'right' });
+
+        // Calorie alimento
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(6.5);
+        doc.setTextColor(100, 116, 139);
+        doc.text(`${itemKcal} kcal`, PAGE_W - MARGIN - 3, y + 3.3, { align: 'right' });
+
+        y += 4.8;
+      });
+
+      y += 3; // spazio tra pasti
+    });
+
+    if (mode === 'current' && dayIndex < daysToPrint.length - 1) {
+      y += 3;
+      doc.setDrawColor(203, 213, 225);
+      doc.setLineWidth(0.3);
+      doc.line(MARGIN + 10, y, PAGE_W - MARGIN - 10, y);
+      y += 5;
+    }
+  });
+
+  // ── PIÈ DI PAGINA DEL DOCUMENTO ──────────────────────────────────────
+  y = ensureSpace(doc, y, 12, pageNum, profile);
+  y += 3;
+  doc.setDrawColor(203, 213, 225);
+  doc.setLineWidth(0.3);
+  doc.line(MARGIN, y, PAGE_W - MARGIN, y);
+  y += 4;
+
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(7);
+  doc.setTextColor(148, 163, 184);
+  const footer = `Bere almeno ${targets.waterLiters} litri d'acqua al giorno. Per patologie cliniche consultare sempre il proprio medico o nutrizionista abilitato.`;
+  const footerLines = splitText(doc, footer, CONTENT_W);
+  footerLines.forEach(line => {
+    doc.text(line, PAGE_W / 2, y, { align: 'center' });
+    y += 3.5;
+  });
+
+  // ── NUMERAZIONE PAGINE COMPLETA (Pag. X di Y) ────────────────────────
+  const totalPages = doc.getNumberOfPages();
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i);
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(7);
+    doc.setTextColor(148, 163, 184);
+    doc.text('NutriPlan • By Barone soft — documento informativo ad uso personale', MARGIN, PAGE_H - 6);
+    doc.text(`Pag. ${i} di ${totalPages}`, PAGE_W - MARGIN, PAGE_H - 6, { align: 'right' });
+  }
+
+  return doc;
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// Componente
+// ─────────────────────────────────────────────────────────────────────
 export const PrintExportModal: React.FC<PrintExportModalProps> = ({
   isOpen,
   onClose,
@@ -29,330 +399,152 @@ export const PrintExportModal: React.FC<PrintExportModalProps> = ({
   const [mode, setMode] = useState<'current' | 'week'>('current');
   const [isGenerating, setIsGenerating] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
-  const printSheetRef = useRef<HTMLDivElement>(null);
 
-  const daysToPrint = mode === 'current' 
+  const daysToPrint = mode === 'current'
     ? (currentDay ? [currentDay] : (weekPlan && weekPlan[0] ? [weekPlan[0]] : []))
     : (weekPlan || []);
 
-  // Generazione e download diretto del file PDF
+  // ── Download PDF diretto ────────────────────────────────────────────
   const handleDownloadPDF = async () => {
-    if (!printSheetRef.current) return;
     setIsGenerating(true);
     setDownloadSuccess(false);
-
     try {
-      const element = printSheetRef.current;
+      const doc = generatePDF(profile, targets, daysToPrint, mode);
 
-      // Cattura rendering ad alta risoluzione del foglio A4
-      const canvas = await html2canvas(element, {
-        scale: 2, // Nitidezza elevata per i testi
-        useCORS: true,
-        backgroundColor: '#ffffff',
-        logging: false,
-        windowWidth: 1024
-      });
-
-      const imgData = canvas.toDataURL('image/jpeg', 0.95);
-
-      // Formato standard A4: 210mm x 297mm
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-
-      const imgWidth = pdfWidth;
-      const imgHeight = (canvas.height * pdfWidth) / canvas.width;
-
-      let heightLeft = imgHeight;
-      let position = 0;
-
-      // Prima pagina
-      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pdfHeight;
-
-      // Pagine successive se il documento è multipagina (es. settimana completa)
-      while (heightLeft > 0) {
-        position -= pdfHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pdfHeight;
-      }
-
-      const safeName = profile.name && profile.name.trim() 
-        ? profile.name.trim().replace(/[^a-zA-Z0-9]/g, '_') 
+      const safeName = profile.name && profile.name.trim()
+        ? profile.name.trim().replace(/[^a-zA-Z0-9]/g, '_')
         : 'Utente';
-      const daySuffix = mode === 'current' 
-        ? (currentDay?.dayName || 'Giorno') 
+      const daySuffix = mode === 'current'
+        ? (currentDay?.dayName || 'Giorno')
         : 'Settimana_7gg';
       const fileName = `NutriPlan_${safeName}_${daySuffix}.pdf`;
 
-      // Download diretto immediato
-      pdf.save(fileName);
+      doc.save(fileName);
       setDownloadSuccess(true);
       setTimeout(() => setDownloadSuccess(false), 4000);
-    } catch (error) {
-      console.error('Errore durante la generazione diretta del PDF:', error);
-      // Fallback trasparente sulla stampa browser
-      window.print();
+    } catch (err) {
+      console.error('Errore generazione PDF:', err);
+      alert('Si è verificato un errore durante la generazione del PDF. Riprova.');
     } finally {
       setIsGenerating(false);
     }
   };
 
-  // Stampa classica su stampante
+  // ── Stampa browser ──────────────────────────────────────────────────
   const handlePrint = () => {
     window.print();
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-900/75 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[96vh] flex flex-col overflow-hidden border border-slate-200">
-        
-        {/* Barra Comandi Ottimizzata per Mobile & Desktop (Nascosta durante la stampa fisica) */}
-        <div className="p-3 sm:p-5 border-b border-slate-200 bg-slate-50/90 backdrop-blur-md flex flex-col gap-3 shrink-0 no-print">
-          
-          {/* Riga 1: Titolo e Pulsante Chiudi ben accessibile */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-900/75 backdrop-blur-xs animate-in fade-in duration-150">
+      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden border border-slate-200 max-h-[92vh] overflow-y-auto">
+
+        {/* Barra Comandi */}
+        <div className="p-4 sm:p-6 border-b border-slate-200 bg-slate-50/90 flex flex-col gap-4">
+
+          {/* Riga titolo + chiudi */}
           <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0 shadow-2xs">
-                <FileText className="w-5 h-5" />
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 shadow-sm">
+                <FileText className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="font-black text-slate-900 text-sm sm:text-base leading-tight">
-                  Esporta o Scarica Piano in PDF
-                </h3>
-                <p className="text-[11px] text-slate-500 hidden sm:block">
-                  Scarica direttamente il file PDF sul tuo telefono o computer
-                </p>
+                <h3 className="font-black text-slate-900 text-base leading-tight">Esporta Piano in PDF</h3>
+                <p className="text-[11px] text-slate-500 mt-0.5">Il file viene scaricato direttamente sul dispositivo</p>
               </div>
             </div>
-
             <button
               onClick={onClose}
-              className="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-slate-900 bg-white hover:bg-slate-100 rounded-xl border border-slate-200 transition-colors shrink-0 shadow-2xs cursor-pointer"
+              className="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-slate-900 bg-white hover:bg-slate-100 rounded-xl border border-slate-200 transition-colors shrink-0 cursor-pointer"
               title="Chiudi"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
-          {/* Riga 2: Switch Giorno/Settimana & Pulsanti Azione Grandi e Chiusi su Mobile */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-1">
-            
-            {/* Selettore Giorno Singolo / Settimana Completa */}
-            <div className="bg-slate-200/80 p-1 rounded-2xl flex text-xs font-bold w-full sm:w-auto shrink-0">
-              <button
-                type="button"
-                onClick={() => setMode('current')}
-                className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-xl transition-all text-center cursor-pointer ${
-                  mode === 'current' 
-                    ? 'bg-white text-emerald-950 shadow-xs font-black' 
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Giorno ({currentDay?.dayName || 'Oggi'})
-              </button>
-              <button
-                type="button"
-                onClick={() => setMode('week')}
-                className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-xl transition-all text-center cursor-pointer ${
-                  mode === 'week' 
-                    ? 'bg-white text-emerald-950 shadow-xs font-black' 
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Settimana Completa (7 gg)
-              </button>
-            </div>
+          {/* Selettore Giorno / Settimana */}
+          <div className="bg-slate-200/80 p-1 rounded-2xl flex text-sm font-bold">
+            <button
+              type="button"
+              onClick={() => setMode('current')}
+              className={`flex-1 px-4 py-2.5 rounded-xl transition-all text-center cursor-pointer ${
+                mode === 'current'
+                  ? 'bg-white text-emerald-950 shadow-sm font-black'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              📅 Giorno ({currentDay?.dayName || 'Oggi'})
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode('week')}
+              className={`flex-1 px-4 py-2.5 rounded-xl transition-all text-center cursor-pointer ${
+                mode === 'week'
+                  ? 'bg-white text-emerald-950 shadow-sm font-black'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              📆 Settimana (7 gg)
+            </button>
+          </div>
 
-            {/* Pulsanti di Azione: Download PDF Diretto & Stampa */}
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              {/* Tasto principale: Download PDF diretto */}
-              <button
-                type="button"
-                onClick={handleDownloadPDF}
-                disabled={isGenerating}
-                className="flex-1 sm:flex-initial px-5 py-3 sm:py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs sm:text-sm font-black rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
-              >
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Generazione PDF in corso...</span>
-                  </>
-                ) : downloadSuccess ? (
-                  <>
-                    <CheckCircle2 className="w-4 h-4 text-emerald-200" />
-                    <span>PDF Scaricato!</span>
-                  </>
-                ) : (
-                  <>
-                    <Download className="w-4 h-4" />
-                    <span>Scarica File PDF</span>
-                  </>
-                )}
-              </button>
+          {/* Pulsanti azione */}
+          <div className="flex gap-2.5">
+            {/* Download PDF — pulsante principale grande */}
+            <button
+              type="button"
+              onClick={handleDownloadPDF}
+              disabled={isGenerating}
+              className="flex-1 py-4 sm:py-3 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-black text-base sm:text-sm rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+            >
+              {isGenerating ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>Creazione PDF...</span>
+                </>
+              ) : downloadSuccess ? (
+                <>
+                  <CheckCircle2 className="w-5 h-5 text-emerald-200" />
+                  <span>PDF Scaricato! ✓</span>
+                </>
+              ) : (
+                <>
+                  <Download className="w-5 h-5" />
+                  <span>Scarica PDF</span>
+                </>
+              )}
+            </button>
 
-              {/* Tasto secondario: Invia a stampante fisica */}
-              <button
-                type="button"
-                onClick={handlePrint}
-                className="px-3.5 py-3 sm:py-2.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs sm:text-sm font-bold rounded-xl transition-colors flex items-center justify-center gap-1.5 cursor-pointer shrink-0 shadow-2xs"
-                title="Invia direttamente alla stampante"
-              >
-                <Printer className="w-4 h-4 text-slate-600" />
-                <span className="hidden sm:inline">Stampa</span>
-              </button>
-            </div>
-
+            {/* Stampa — secondario */}
+            <button
+              type="button"
+              onClick={handlePrint}
+              className="px-4 py-4 sm:py-3 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-bold rounded-2xl transition-colors flex items-center justify-center gap-2 cursor-pointer shrink-0"
+              title="Invia alla stampante"
+            >
+              <Printer className="w-5 h-5 text-slate-600" />
+              <span className="hidden sm:inline text-sm">Stampa</span>
+            </button>
           </div>
 
         </div>
 
-        {/* Foglio Stampabile / Cattura PDF (scrollabile a schermo) */}
-        <div className="p-4 sm:p-8 overflow-y-auto flex-1 bg-white text-slate-900 print:p-0">
-          
-          <div ref={printSheetRef} className="max-w-3xl mx-auto bg-white p-2 sm:p-4">
-            
-            {/* Header Documento */}
-            <div className="border-b-2 border-emerald-600 pb-4 mb-5 flex flex-col sm:flex-row justify-between items-start gap-3">
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-black text-xl sm:text-2xl text-slate-900 tracking-tight">NUTRIPLAN</span>
-                  <span className="text-xs font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md">
-                    : By Barone soft
-                  </span>
-                </div>
-                <h1 className="text-sm sm:text-base font-bold text-slate-700 mt-1">
-                  Piano Alimentare Personalizzato • {mode === 'current' ? `Giornata di ${currentDay?.dayName || 'Oggi'}` : 'Settimana Completa (7 Giorni)'}
-                </h1>
-                <div className="text-[11px] text-slate-500 mt-0.5">Elaborato su evidenze scientifiche e bilanciamento dei macronutrienti</div>
-              </div>
-
-              <div className="text-left sm:text-right text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-200 sm:border-0 sm:bg-transparent sm:p-0">
-                <div className="font-black text-slate-900 text-sm">{profile.name && profile.name.trim() ? profile.name : 'Paziente / Utente'}</div>
-                <div>{profile.age > 0 ? `${profile.age} anni • ` : ''}{profile.gender === 'male' ? 'Uomo' : 'Donna'} • {profile.heightCm > 0 ? `${profile.heightCm} cm • ` : ''}{profile.weightKg > 0 ? `${profile.weightKg} kg` : ''}</div>
-                <div className="font-bold text-emerald-700">BMI: {targets.bmi > 0 ? targets.bmi : '--'} ({targets.bmiCategory})</div>
-              </div>
-            </div>
-
-            {/* Obiettivo e Target Macro */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3.5 bg-slate-50 rounded-2xl border border-slate-200 mb-5 text-center text-xs">
-              <div className="p-2 bg-white rounded-xl border border-slate-100 shadow-2xs">
-                <span className="text-slate-500 block uppercase text-[10px] font-semibold">Target Calorico</span>
-                <span className="text-base font-black text-slate-900">{targets.targetCalories} kcal</span>
-              </div>
-              <div className="p-2 bg-white rounded-xl border border-slate-100 shadow-2xs">
-                <span className="text-slate-500 block uppercase text-[10px] font-semibold">Proteine</span>
-                <span className="text-base font-black text-blue-700">{targets.proteinGrams}g</span>
-              </div>
-              <div className="p-2 bg-white rounded-xl border border-slate-100 shadow-2xs">
-                <span className="text-slate-500 block uppercase text-[10px] font-semibold">Carboidrati</span>
-                <span className="text-base font-black text-amber-700">{targets.carbsGrams}g</span>
-              </div>
-              <div className="p-2 bg-white rounded-xl border border-slate-100 shadow-2xs">
-                <span className="text-slate-500 block uppercase text-[10px] font-semibold">Grassi</span>
-                <span className="text-base font-black text-rose-700">{targets.fatsGrams}g</span>
-              </div>
-            </div>
-
-            {/* Quadro Clinico & Allergie Rilevate nel Documento */}
-            {((profile.pathologies && profile.pathologies.length > 0) || 
-              (profile.allergies && profile.allergies.length > 0) || 
-              (profile.customExcludedFoods && profile.customExcludedFoods.length > 0)) && (
-              <div className="mb-5 p-3.5 bg-amber-50/80 border border-amber-200 rounded-2xl text-xs text-amber-950 space-y-2">
-                {profile.pathologies && profile.pathologies.length > 0 && (
-                  <div>
-                    <span className="font-bold text-slate-900 block mb-1">Patologie & Condizioni Cliniche Rispettate:</span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {profile.pathologies.map(pid => {
-                        const p = PATHOLOGIES_DATA[pid];
-                        return (
-                          <span key={pid} className="font-semibold bg-white border border-amber-200 px-2 py-0.5 rounded-lg text-[11px]">
-                            • {p ? p.name : pid}
-                          </span>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                {((profile.allergies && profile.allergies.length > 0) || (profile.customExcludedFoods && profile.customExcludedFoods.length > 0)) && (
-                  <div className="pt-1 border-t border-amber-200/60">
-                    <span className="font-bold text-slate-900 block mb-1">Allergie & Alimenti Esclusi dall'Elaborazione:</span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {profile.allergies?.map(aid => {
-                        const a = ALLERGIES_DATA.find(item => item.id === aid);
-                        return (
-                          <span key={aid} className="font-bold text-rose-800 bg-white border border-rose-200 px-2 py-0.5 rounded-lg text-[11px]">
-                            🚫 {a ? a.name : aid}
-                          </span>
-                        );
-                      })}
-                      {profile.customExcludedFoods?.map(custom => (
-                        <span key={custom} className="font-bold text-rose-800 bg-white border border-rose-200 px-2 py-0.5 rounded-lg text-[11px]">
-                          🚫 {custom}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Pasti dei giorni selezionati */}
-            <div className="space-y-5">
-              {daysToPrint.map(day => {
-                const dayTotals = calculateDayTotals(day);
-
-                return (
-                  <div key={day.dayIndex} className="page-break border border-slate-200 rounded-2xl p-4 sm:p-5 bg-white shadow-2xs">
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-200 pb-2.5 mb-3.5 gap-1">
-                      <h2 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                        <span>{day.dayName}</span>
-                      </h2>
-                      <span className="text-xs font-bold text-slate-600 bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-200/60">
-                        Totale giorno: {dayTotals.calories} kcal • P: {dayTotals.protein}g | C: {dayTotals.carbs}g | G: {dayTotals.fats}g
-                      </span>
-                    </div>
-
-                    <div className="space-y-3">
-                      {day.meals.map(meal => {
-                        const mealTot = calculateMealTotals(meal.foods);
-
-                        return (
-                          <div key={meal.id} className="bg-slate-50/80 p-3 rounded-xl border border-slate-100 text-xs">
-                            <div className="flex justify-between font-extrabold text-slate-900 mb-1.5 border-b border-slate-200/60 pb-1">
-                              <span>{meal.name} <span className="text-slate-500 font-normal text-[11px]">({meal.timeSlot})</span></span>
-                              <span className="text-emerald-700 font-black">{mealTot.calories} kcal</span>
-                            </div>
-
-                            <table className="w-full text-left">
-                              <tbody>
-                                {meal.foods.map((f, i) => (
-                                  <tr key={i} className="border-b border-slate-100 last:border-0">
-                                    <td className="py-1 text-slate-800 font-medium">{f.food.name}</td>
-                                    <td className="py-1 font-black text-right text-emerald-800">{f.grams}g</td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Disclaimer e Note a Piè di Pagina */}
-            <div className="mt-8 pt-4 border-t border-slate-200 text-[10px] text-slate-500 text-center leading-relaxed">
-              NutriPlan Pro • Documento informativo ad uso personale. Bere almeno {targets.waterLiters} litri di acqua al giorno. Per patologie cliniche croniche fare sempre riferimento al proprio medico curante o nutrizionista abilitato.
-            </div>
-
+        {/* Anteprima contenuto */}
+        <div className="p-4 sm:p-6 bg-slate-50 text-slate-600 text-sm">
+          <div className="font-semibold text-slate-800 mb-1.5">
+            Il PDF conterrà:
           </div>
-
+          <ul className="space-y-1 text-xs text-slate-500">
+            <li>✅ Dati personali e target macro (calorie, proteine, carboidrati, grassi)</li>
+            {((profile.pathologies && profile.pathologies.length > 0) ||
+              (profile.allergies && profile.allergies.length > 0) ||
+              (profile.customExcludedFoods && profile.customExcludedFoods.length > 0)) && (
+              <li>✅ Patologie e allergie rispettate nell'elaborazione</li>
+            )}
+            <li>✅ {mode === 'current' ? `Pasti del giorno (${currentDay?.dayName || 'oggi'})` : 'Pasti di tutti i 7 giorni della settimana'} con grammi per ogni alimento</li>
+            <li>✅ Totali nutrizionali per ogni pasto e per ogni giornata</li>
+            <li>✅ Nota sull'idratazione ({targets.waterLiters} L/giorno)</li>
+          </ul>
         </div>
 
       </div>

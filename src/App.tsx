@@ -11,7 +11,7 @@ import { GroceryListView } from './components/GroceryListView';
 import { UserProfileForm } from './components/UserProfileForm';
 import { PathologyInfoModal } from './components/PathologyInfoModal';
 import { PrintExportModal } from './components/PrintExportModal';
-import { Sparkles, CheckCircle2, UserCheck, ArrowRight, Utensils } from 'lucide-react';
+import { Sparkles, CheckCircle2, UserCheck, ArrowRight, Utensils, FileDown } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 // Schermata vuota amichevole al primo avvio se i dati personali non sono inseriti
@@ -246,6 +246,7 @@ export function App() {
               onUpdateMeal={handleUpdateMeal}
               onRegenerateDay={handleRegenerateDay}
               onOpenPathologyModal={() => setCurrentTab('pathologies')}
+              onOpenPrintModal={() => setIsPrintModalOpen(true)}
             />
           ) : (
             <EmptyPlanView onConfigureClick={() => setCurrentTab('profile')} />
@@ -263,6 +264,7 @@ export function App() {
                 setCurrentTab('day');
               }}
               onRegenerateAll={handleRegenerateAll}
+              onOpenPrintModal={() => setIsPrintModalOpen(true)}
             />
           ) : (
             <EmptyPlanView onConfigureClick={() => setCurrentTab('profile')} />
@@ -291,6 +293,18 @@ export function App() {
           />
         )}
       </main>
+
+      {/* Pulsante Fluttuante Genera PDF per Cellulari (sempre a portata di mano ovunque si scorra) */}
+      {hasPlan && (
+        <button
+          onClick={() => setIsPrintModalOpen(true)}
+          className="md:hidden fixed bottom-18 right-3.5 z-40 bg-gradient-to-r from-emerald-600 to-teal-700 active:scale-95 text-white font-extrabold text-xs px-3.5 py-2.5 rounded-full shadow-xl border-2 border-white flex items-center gap-1.5 transition-all cursor-pointer"
+          title="Genera PDF del piano alimentare"
+        >
+          <FileDown className="w-4 h-4" />
+          <span>Genera PDF</span>
+        </button>
+      )}
 
       {/* Modale Stampa & Esporta PDF (attiva solo se il piano è generato) */}
       {hasPlan && currentDay && (

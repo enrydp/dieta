@@ -470,7 +470,7 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = ({
                       {allergy.type}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-600 line-clamp-2 leading-snug">
+                  <p className="text-xs text-slate-600 leading-relaxed break-words whitespace-normal">
                     {allergy.description}
                   </p>
                 </div>
@@ -593,7 +593,7 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = ({
                   <span className="inline-block text-[10px] font-semibold text-rose-700 bg-rose-100/70 px-2 py-0.5 rounded-full mb-1.5">
                     {p.badge}
                   </span>
-                  <p className="text-xs text-slate-600 line-clamp-2">
+                  <p className="text-xs text-slate-600 leading-relaxed break-words whitespace-normal">
                     {p.summary}
                   </p>
                 </div>

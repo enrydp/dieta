@@ -1,7 +1,7 @@
 import React from 'react';
 import { UserProfile } from '../types/diet';
 import { CuteAvatar } from './CuteAvatar';
-import { Utensils, CalendarDays, ShoppingBag, User, BookOpen, Printer, RefreshCw } from 'lucide-react';
+import { Utensils, CalendarDays, ShoppingBag, User, BookOpen, Printer, RefreshCw, FileDown } from 'lucide-react';
 
 export type NavTab = 'day' | 'week' | 'grocery' | 'profile' | 'pathologies';
 
@@ -157,11 +157,11 @@ export const Navbar: React.FC<NavbarProps> = ({
 
                   <button
                     onClick={onPrintClick}
-                    className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 text-xs font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 rounded-xl shadow-xs transition-all cursor-pointer ring-2 ring-emerald-500/20"
                     title="Stampa o Salva PDF"
                   >
-                    <Printer className="w-3.5 h-3.5" />
-                    <span className="hidden sm:inline">Stampa / PDF</span>
+                    <FileDown className="w-3.5 h-3.5" />
+                    <span className="font-extrabold text-xs">PDF</span>
                   </button>
                 </>
               )}

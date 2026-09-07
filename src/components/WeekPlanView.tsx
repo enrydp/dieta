@@ -1,7 +1,7 @@
 import React from 'react';
 import { DayDietPlan, UserProfile, MacroTargets } from '../types/diet';
 import { calculateDayTotals } from '../utils/planGenerator';
-import { Calendar, ArrowRight, RefreshCw, Flame, Dumbbell, Sparkles } from 'lucide-react';
+import { Calendar, ArrowRight, RefreshCw, Flame, Dumbbell, Sparkles, FileDown } from 'lucide-react';
 
 interface WeekPlanViewProps {
   weekPlan: DayDietPlan[];
@@ -9,6 +9,7 @@ interface WeekPlanViewProps {
   targets: MacroTargets;
   onSelectDayIndex: (index: number) => void;
   onRegenerateAll: () => void;
+  onOpenPrintModal: () => void;
 }
 
 export const WeekPlanView: React.FC<WeekPlanViewProps> = ({
@@ -16,7 +17,8 @@ export const WeekPlanView: React.FC<WeekPlanViewProps> = ({
   profile,
   targets,
   onSelectDayIndex,
-  onRegenerateAll
+  onRegenerateAll,
+  onOpenPrintModal
 }) => {
   return (
     <div className="max-w-5xl mx-auto space-y-6">
@@ -33,13 +35,24 @@ export const WeekPlanView: React.FC<WeekPlanViewProps> = ({
           </p>
         </div>
 
-        <button
-          onClick={onRegenerateAll}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs sm:text-sm font-semibold rounded-xl border border-emerald-200 transition-colors shrink-0"
-        >
-          <RefreshCw className="w-4 h-4" />
-          <span>Rigenera Intera Settimana</span>
-        </button>
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <button
+            onClick={onOpenPrintModal}
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs sm:text-sm font-bold rounded-xl shadow-xs transition-all cursor-pointer"
+            title="Genera PDF della settimana"
+          >
+            <FileDown className="w-4 h-4" />
+            <span>Scarica PDF (7 gg)</span>
+          </button>
+
+          <button
+            onClick={onRegenerateAll}
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs sm:text-sm font-semibold rounded-xl border border-emerald-200 transition-colors shrink-0"
+          >
+            <RefreshCw className="w-4 h-4" />
+            <span>Rigenera Intera Settimana</span>
+          </button>
+        </div>
       </div>
 
       {/* Griglia dei 7 Giorni */}

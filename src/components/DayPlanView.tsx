@@ -2,7 +2,7 @@ import React from 'react';
 import { DayDietPlan, MealPlan, UserProfile, MacroTargets } from '../types/diet';
 import { MacroOverview } from './MacroOverview';
 import { MealCard } from './MealCard';
-import { RefreshCw, Calendar, Sparkles } from 'lucide-react';
+import { RefreshCw, Calendar, Sparkles, FileDown, Download } from 'lucide-react';
 
 interface DayPlanViewProps {
   dayPlan: DayDietPlan;
@@ -13,6 +13,7 @@ interface DayPlanViewProps {
   onUpdateMeal: (meal: MealPlan) => void;
   onRegenerateDay: () => void;
   onOpenPathologyModal: () => void;
+  onOpenPrintModal: () => void;
 }
 
 export const DayPlanView: React.FC<DayPlanViewProps> = ({
@@ -23,13 +24,39 @@ export const DayPlanView: React.FC<DayPlanViewProps> = ({
   targets,
   onUpdateMeal,
   onRegenerateDay,
-  onOpenPathologyModal
+  onOpenPathologyModal,
+  onOpenPrintModal
 }) => {
   const dayLabels = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
+    <div className="space-y-4 sm:space-y-6 max-w-5xl mx-auto">
       
+      {/* Banner Rapido Genera PDF (Ad altissima visibilità su Cellulari) */}
+      <div className="bg-gradient-to-r from-emerald-600 via-emerald-700 to-teal-700 rounded-2xl p-3.5 sm:p-4 text-white shadow-md flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+            <FileDown className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <div className="font-black text-sm sm:text-base leading-tight">
+              Genera PDF del Piano
+            </div>
+            <div className="text-[11px] text-emerald-100 mt-0.5 leading-snug">
+              Scarica {dayPlan.dayName} o l'intera settimana (7 giorni)
+            </div>
+          </div>
+        </div>
+
+        <button
+          onClick={onOpenPrintModal}
+          className="px-3.5 sm:px-4 py-2 sm:py-2.5 bg-white text-emerald-900 font-extrabold text-xs sm:text-sm rounded-xl shadow-xs hover:bg-emerald-50 active:scale-95 transition-all flex items-center gap-1.5 shrink-0 cursor-pointer"
+        >
+          <Download className="w-4 h-4 text-emerald-700" />
+          <span>SCARICA PDF</span>
+        </button>
+      </div>
+
       {/* Day Selector Pills */}
       <div className="bg-white p-2 sm:p-2.5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between gap-1 sm:gap-2 overflow-x-auto no-scrollbar no-print">
         <div className="flex items-center gap-1 sm:gap-2 flex-1">
@@ -58,6 +85,15 @@ export const DayPlanView: React.FC<DayPlanViewProps> = ({
         >
           <RefreshCw className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">Varia Giorno</span>
+        </button>
+
+        <button
+          onClick={onOpenPrintModal}
+          className="p-2 sm:px-3 sm:py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 rounded-xl transition-all flex items-center gap-1.5 shrink-0 shadow-xs cursor-pointer"
+          title="Genera PDF del piano alimentare"
+        >
+          <FileDown className="w-3.5 h-3.5 text-white" />
+          <span className="font-extrabold text-xs">PDF</span>
         </button>
       </div>
 
