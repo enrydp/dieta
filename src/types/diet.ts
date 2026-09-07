@@ -60,6 +60,7 @@ export interface UserProfile {
   dietType: DietType;
   mealsPerDay: number; // 3 to 6
   pathologies: PathologyId[];
+  isConfigured?: boolean;
 }
 
 export type FoodCategory =

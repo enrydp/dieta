@@ -4,23 +4,29 @@ const PROFILE_KEY = 'nutriplan_user_profile';
 const WEEK_PLAN_KEY = 'nutriplan_week_plan';
 
 export const DEFAULT_PROFILE: UserProfile = {
-  name: 'Mario Rossi',
-  age: 32,
+  name: '',
+  age: 30,
   gender: 'male',
-  heightCm: 178,
-  weightKg: 78,
+  heightCm: 175,
+  weightKg: 70,
   activityLevel: 'moderate',
-  goal: 'cut_slow',
+  goal: 'maintain',
   dietType: 'mediterranean',
   mealsPerDay: 4,
-  pathologies: ['cholesterol']
+  pathologies: [],
+  isConfigured: false
 };
 
 export function loadUserProfile(): UserProfile {
   try {
     const data = localStorage.getItem(PROFILE_KEY);
     if (data) {
-      return JSON.parse(data);
+      const parsed = JSON.parse(data);
+      // Assicura che la proprietà pathologies esista
+      if (!Array.isArray(parsed.pathologies)) {
+        parsed.pathologies = [];
+      }
+      return parsed;
     }
   } catch (e) {
     console.error('Error loading profile from localStorage:', e);

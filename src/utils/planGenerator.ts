@@ -109,7 +109,7 @@ export function getFoodsByCategory(category: FoodItem['category'], profile: User
   return FOODS_DATABASE.filter(f => f.category === category && isFoodAllowed(f, profile));
 }
 
-export function generateDailyPlan(profile: UserProfile, targets: MacroTargets, dayIndex: number = 0): DayDietPlan {
+export function generateDailyPlan(profile: UserProfile, targets: MacroTargets, dayIndex: number = 0, seed: number = 0): DayDietPlan {
   const dayNames = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica'];
   const distribution = getMealDistribution(profile.mealsPerDay);
 
@@ -127,32 +127,34 @@ export function generateDailyPlan(profile: UserProfile, targets: MacroTargets, d
   const nuts = allowed.filter(f => f.category === 'nuts_seeds');
   const oils = allowed.filter(f => f.category === 'oils_fats');
 
-  // Varianti proteiche per i 7 giorni
-  // Alterniamo carne bianca, pesce azzurro/magro, uova, legumi/tofu, ecc.
+  // Varianti proteiche per i 7 giorni con offset di variazione (seed)
+  const allProteins = [...meats, ...fish, ...eggs, ...plants, ...dairy];
+  const offset = dayIndex + seed;
+
   const lunchProteins = [
-    meats.length ? meats[dayIndex % meats.length] : (fish[0] || eggs[0]),
-    fish.length ? fish[(dayIndex + 1) % fish.length] : (meats[0] || plants[0]),
-    plants.length ? plants[dayIndex % plants.length] : (fish[0] || meats[0]),
-    fish.length ? fish[dayIndex % fish.length] : (meats[0] || eggs[0]),
-    meats.length ? meats[(dayIndex + 1) % meats.length] : (fish[0] || plants[0]),
-    fish.length ? fish[(dayIndex + 2) % fish.length] : (eggs[0] || meats[0]),
-    eggs.length ? eggs[dayIndex % eggs.length] : (fish[0] || plants[0])
+    meats.length ? meats[offset % meats.length] : (fish[0] || allProteins[0]),
+    fish.length ? fish[(offset + 1) % fish.length] : (meats[0] || allProteins[0]),
+    plants.length ? plants[offset % plants.length] : (fish[0] || allProteins[0]),
+    fish.length ? fish[offset % fish.length] : (meats[0] || allProteins[0]),
+    meats.length ? meats[(offset + 1) % meats.length] : (fish[0] || allProteins[0]),
+    fish.length ? fish[(offset + 2) % fish.length] : (eggs[0] || allProteins[0]),
+    eggs.length ? eggs[offset % eggs.length] : (fish[0] || allProteins[0])
   ];
 
   const dinnerProteins = [
-    fish.length ? fish[dayIndex % fish.length] : (meats[0] || plants[0]),
-    meats.length ? meats[dayIndex % meats.length] : (fish[0] || eggs[0]),
-    eggs.length ? eggs[dayIndex % eggs.length] : (fish[0] || plants[0]),
-    meats.length ? meats[(dayIndex + 1) % meats.length] : (plants[0] || fish[0]),
-    fish.length ? fish[(dayIndex + 1) % fish.length] : (eggs[0] || meats[0]),
-    plants.length ? plants[dayIndex % plants.length] : (fish[0] || meats[0]),
-    fish.length ? fish[(dayIndex + 2) % fish.length] : (meats[0] || eggs[0])
+    fish.length ? fish[(offset + 1) % fish.length] : (meats[0] || allProteins[0]),
+    meats.length ? meats[offset % meats.length] : (fish[0] || allProteins[0]),
+    eggs.length ? eggs[offset % eggs.length] : (fish[0] || allProteins[0]),
+    meats.length ? meats[(offset + 2) % meats.length] : (plants[0] || allProteins[0]),
+    fish.length ? fish[(offset + 2) % fish.length] : (eggs[0] || allProteins[0]),
+    plants.length ? plants[offset % plants.length] : (fish[0] || allProteins[0]),
+    fish.length ? fish[(offset + 3) % fish.length] : (meats[0] || allProteins[0])
   ];
 
-  const lunchCarb = grains.length ? grains[dayIndex % grains.length] : null;
-  const dinnerCarb = grains.length ? grains[(dayIndex + 2) % grains.length] : null;
-  const lunchVeg = vegetables.length ? vegetables[dayIndex % vegetables.length] : null;
-  const dinnerVeg = vegetables.length ? vegetables[(dayIndex + 1) % vegetables.length] : null;
+  const lunchCarb = grains.length ? grains[offset % grains.length] : null;
+  const dinnerCarb = grains.length ? grains[(offset + 2) % grains.length] : null;
+  const lunchVeg = vegetables.length ? vegetables[offset % vegetables.length] : null;
+  const dinnerVeg = vegetables.length ? vegetables[(offset + 1) % vegetables.length] : null;
   const lunchOil = oils.length ? oils[0] : null;
   const dinnerOil = oils.length ? oils[0] : null;
 
@@ -268,11 +270,11 @@ export function generateDailyPlan(profile: UserProfile, targets: MacroTargets, d
   };
 }
 
-export function generateWeekPlan(profile: UserProfile): DayDietPlan[] {
+export function generateWeekPlan(profile: UserProfile, seed: number = 0): DayDietPlan[] {
   const targets = calculateMacroTargets(profile);
   const week: DayDietPlan[] = [];
   for (let i = 0; i < 7; i++) {
-    week.push(generateDailyPlan(profile, targets, i));
+    week.push(generateDailyPlan(profile, targets, i, seed));
   }
   return week;
 }
