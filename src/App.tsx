@@ -12,15 +12,76 @@ import { GroceryListView } from './components/GroceryListView';
 import { UserProfileForm } from './components/UserProfileForm';
 import { PathologyInfoModal } from './components/PathologyInfoModal';
 import { PrintExportModal } from './components/PrintExportModal';
-import { Sparkles, CheckCircle2, UserCheck, ArrowRight } from 'lucide-react';
+import { Sparkles, CheckCircle2, UserCheck, ArrowRight, Utensils } from 'lucide-react';
 import confetti from 'canvas-confetti';
+
+// Schermata vuota amichevole al primo avvio se i dati personali non sono inseriti
+const EmptyPlanView: React.FC<{ onConfigureClick: () => void }> = ({ onConfigureClick }) => (
+  <div className="max-w-2xl mx-auto py-10 px-4">
+    <div className="bg-white rounded-3xl p-8 sm:p-10 border border-slate-200 shadow-sm text-center">
+      <div className="w-20 h-20 mx-auto rounded-3xl bg-emerald-50 border-2 border-emerald-200 flex items-center justify-center text-emerald-600 mb-5 shadow-xs">
+        <Utensils className="w-9 h-9" />
+      </div>
+
+      <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-900 rounded-full text-xs font-black border border-amber-200 mb-3">
+        <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+        <span>Primo Accesso • Nessuna Dieta Calcolata</span>
+      </div>
+
+      <h3 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mb-3">
+        Nessun Piano Alimentare Presente
+      </h3>
+
+      <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-lg mx-auto mb-6">
+        Per evitare di mostrarti piani generici o non adatti al tuo fisico, il piano alimentare viene generato solo dopo aver inserito i tuoi dati reali.
+      </p>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8 text-left">
+        <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/70">
+          <div className="text-xs font-bold text-slate-800 flex items-center gap-1.5 mb-1">
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <span>1. Misure Reali</span>
+          </div>
+          <p className="text-[11px] text-slate-500">Sesso, peso, altezza ed età per calcolare BMR e fabbisogno calorico (TDEE).</p>
+        </div>
+
+        <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/70">
+          <div className="text-xs font-bold text-slate-800 flex items-center gap-1.5 mb-1">
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <span>2. Obiettivo Fisico</span>
+          </div>
+          <p className="text-[11px] text-slate-500">Dimagrimento, mantenimento tonico o aumento massa muscolare.</p>
+        </div>
+
+        <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/70">
+          <div className="text-xs font-bold text-slate-800 flex items-center gap-1.5 mb-1">
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <span>3. Salute & Patologie</span>
+          </div>
+          <p className="text-[11px] text-slate-500">Diabete, colesterolo, intolleranze o reflusso per esclusioni mirate.</p>
+        </div>
+      </div>
+
+      <button
+        onClick={onConfigureClick}
+        className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-black rounded-2xl shadow-md hover:shadow-lg transition-all cursor-pointer group"
+      >
+        <UserCheck className="w-4 h-4" />
+        <span>Inserisci Dati & Genera la Tua Dieta</span>
+        <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+      </button>
+    </div>
+  </div>
+);
 
 export function App() {
   const [profile, setProfile] = useState<UserProfile>(() => loadUserProfile());
   const [weekPlan, setWeekPlan] = useState<DayDietPlan[]>(() => {
+    const initial = loadUserProfile();
+    // Al primo avvio, se il profilo non è configurato, non mostrare alcuna dieta
+    if (!initial.isConfigured) return [];
     const saved = loadWeekPlan();
     if (saved && saved.length === 7) return saved;
-    const initial = loadUserProfile();
     return generateWeekPlan(initial);
   });
   
@@ -31,12 +92,15 @@ export function App() {
   const [successToast, setSuccessToast] = useState<string | null>(null);
 
   const targets = calculateMacroTargets(profile);
-  const currentDay = weekPlan[activeDayIndex] || weekPlan[0];
+  const hasPlan = Boolean(profile.isConfigured && weekPlan && weekPlan.length === 7);
+  const currentDay = hasPlan ? (weekPlan[activeDayIndex] || weekPlan[0]) : null;
 
-  // Salvataggio automatico piano settimanale al variare
+  // Salvataggio automatico piano settimanale al variare solo se configurato
   useEffect(() => {
-    saveWeekPlan(weekPlan);
-  }, [weekPlan]);
+    if (profile.isConfigured && weekPlan && weekPlan.length === 7) {
+      saveWeekPlan(weekPlan);
+    }
+  }, [weekPlan, profile.isConfigured]);
 
   // Aggiornamento pasto singolo
   const handleUpdateMeal = (updatedMeal: MealPlan) => {
@@ -176,33 +240,45 @@ export function App() {
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {currentTab === 'day' && (
-          <DayPlanView
-            dayPlan={currentDay}
-            activeDayIndex={activeDayIndex}
-            onSelectDayIndex={setActiveDayIndex}
-            profile={profile}
-            targets={targets}
-            onUpdateMeal={handleUpdateMeal}
-            onRegenerateDay={handleRegenerateDay}
-            onOpenPathologyModal={() => setCurrentTab('pathologies')}
-          />
+          hasPlan && currentDay ? (
+            <DayPlanView
+              dayPlan={currentDay}
+              activeDayIndex={activeDayIndex}
+              onSelectDayIndex={setActiveDayIndex}
+              profile={profile}
+              targets={targets}
+              onUpdateMeal={handleUpdateMeal}
+              onRegenerateDay={handleRegenerateDay}
+              onOpenPathologyModal={() => setCurrentTab('pathologies')}
+            />
+          ) : (
+            <EmptyPlanView onConfigureClick={() => setCurrentTab('profile')} />
+          )
         )}
 
         {currentTab === 'week' && (
-          <WeekPlanView
-            weekPlan={weekPlan}
-            profile={profile}
-            targets={targets}
-            onSelectDayIndex={(idx) => {
-              setActiveDayIndex(idx);
-              setCurrentTab('day');
-            }}
-            onRegenerateAll={handleRegenerateAll}
-          />
+          hasPlan ? (
+            <WeekPlanView
+              weekPlan={weekPlan}
+              profile={profile}
+              targets={targets}
+              onSelectDayIndex={(idx) => {
+                setActiveDayIndex(idx);
+                setCurrentTab('day');
+              }}
+              onRegenerateAll={handleRegenerateAll}
+            />
+          ) : (
+            <EmptyPlanView onConfigureClick={() => setCurrentTab('profile')} />
+          )
         )}
 
         {currentTab === 'grocery' && (
-          <GroceryListView weekPlan={weekPlan} />
+          hasPlan ? (
+            <GroceryListView weekPlan={weekPlan} />
+          ) : (
+            <EmptyPlanView onConfigureClick={() => setCurrentTab('profile')} />
+          )
         )}
 
         {currentTab === 'profile' && (
@@ -220,15 +296,17 @@ export function App() {
         )}
       </main>
 
-      {/* Modale Stampa & Esporta PDF */}
-      <PrintExportModal
-        isOpen={isPrintModalOpen}
-        onClose={() => setIsPrintModalOpen(false)}
-        profile={profile}
-        targets={targets}
-        currentDay={currentDay}
-        weekPlan={weekPlan}
-      />
+      {/* Modale Stampa & Esporta PDF (attiva solo se il piano è generato) */}
+      {hasPlan && currentDay && (
+        <PrintExportModal
+          isOpen={isPrintModalOpen}
+          onClose={() => setIsPrintModalOpen(false)}
+          profile={profile}
+          targets={targets}
+          currentDay={currentDay}
+          weekPlan={weekPlan}
+        />
+      )}
 
     </div>
   );

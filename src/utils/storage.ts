@@ -44,6 +44,10 @@ export function saveUserProfile(profile: UserProfile): void {
 
 export function loadWeekPlan(): DayDietPlan[] | null {
   try {
+    const userProfile = loadUserProfile();
+    if (!userProfile.isConfigured) {
+      return null;
+    }
     const data = localStorage.getItem(WEEK_PLAN_KEY);
     if (data) {
       return JSON.parse(data);

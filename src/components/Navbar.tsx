@@ -143,24 +143,28 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </div>
               </div>
 
-              {/* Azioni rapide */}
-              <button
-                onClick={onRegenerateClick}
-                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
-                title="Rigenera il piano alimentare con nuove combinazioni"
-              >
-                <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
-                <span>Rigenera</span>
-              </button>
+              {/* Azioni rapide (visibili solo se il piano è generato/configurato) */}
+              {profile.isConfigured && (
+                <>
+                  <button
+                    onClick={onRegenerateClick}
+                    className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
+                    title="Rigenera il piano alimentare con nuove combinazioni"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Rigenera</span>
+                  </button>
 
-              <button
-                onClick={onPrintClick}
-                className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 text-xs font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition-colors cursor-pointer"
-                title="Stampa o Salva PDF"
-              >
-                <Printer className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Stampa / PDF</span>
-              </button>
+                  <button
+                    onClick={onPrintClick}
+                    className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 text-xs font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition-colors cursor-pointer"
+                    title="Stampa o Salva PDF"
+                  >
+                    <Printer className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Stampa / PDF</span>
+                  </button>
+                </>
+              )}
             </div>
 
           </div>
