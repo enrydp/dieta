@@ -4,7 +4,6 @@ import { loadUserProfile, saveUserProfile, loadWeekPlan, saveWeekPlan } from './
 import { calculateMacroTargets } from './utils/calculations';
 import { generateWeekPlan, generateDailyPlan } from './utils/planGenerator';
 
-import { DisclaimerBanner } from './components/DisclaimerBanner';
 import { Navbar, NavTab } from './components/Navbar';
 import { DayPlanView } from './components/DayPlanView';
 import { WeekPlanView } from './components/WeekPlanView';
@@ -190,9 +189,6 @@ export function App() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans pb-20 md:pb-8">
       
-      {/* Disclaimer Medico */}
-      <DisclaimerBanner />
-
       {/* Toast Notifica Successo Dinamico */}
       {successToast && (
         <div className="bg-emerald-600 text-white text-xs sm:text-sm font-semibold py-2.5 px-4 text-center sticky top-0 z-50 shadow-md flex items-center justify-center gap-2 animate-in slide-in-from-top duration-200">

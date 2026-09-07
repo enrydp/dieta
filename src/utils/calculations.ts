@@ -1,6 +1,9 @@
 import { UserProfile, MacroTargets } from '../types/diet';
 
 export function calculateBMI(weightKg: number, heightCm: number): { bmi: number; category: string } {
+  if (!weightKg || !heightCm || weightKg <= 0 || heightCm <= 0) {
+    return { bmi: 0, category: 'Da compilare' };
+  }
   const heightM = heightCm / 100;
   const bmi = Number((weightKg / (heightM * heightM)).toFixed(1));
   
@@ -17,7 +20,7 @@ export function calculateBMI(weightKg: number, heightCm: number): { bmi: number;
 
 export function calculateBodyFat(profile: UserProfile): number | undefined {
   const { gender, heightCm, waistCm, neckCm, hipCm } = profile;
-  if (!waistCm || !neckCm) return undefined;
+  if (!heightCm || heightCm <= 0 || !waistCm || !neckCm) return undefined;
 
   if (gender === 'male') {
     if (waistCm <= neckCm) return undefined;
@@ -33,9 +36,13 @@ export function calculateBodyFat(profile: UserProfile): number | undefined {
 }
 
 export function calculateBMR(profile: UserProfile): number {
+  const weight = profile.weightKg > 0 ? profile.weightKg : 70;
+  const height = profile.heightCm > 0 ? profile.heightCm : 175;
+  const age = profile.age > 0 ? profile.age : 30;
+
   // Formula di Mifflin-St Jeor
   const s = profile.gender === 'male' ? 5 : -161;
-  const bmr = 10 * profile.weightKg + 6.25 * profile.heightCm - 5 * profile.age + s;
+  const bmr = 10 * weight + 6.25 * height - 5 * age + s;
   return Math.round(bmr);
 }
 
@@ -51,6 +58,7 @@ export function getActivityMultiplier(level: UserProfile['activityLevel']): numb
 }
 
 export function calculateMacroTargets(profile: UserProfile): MacroTargets {
+  const safeWeight = profile.weightKg > 0 ? profile.weightKg : 70;
   const { bmi, category: bmiCategory } = calculateBMI(profile.weightKg, profile.heightCm);
   const bodyFatPercentage = calculateBodyFat(profile);
   const bmr = calculateBMR(profile);

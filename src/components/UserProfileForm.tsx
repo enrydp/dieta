@@ -4,6 +4,7 @@ import { PATHOLOGIES_DATA } from '../data/pathologies';
 import { calculateBMI, calculateBodyFat, calculateMacroTargets } from '../utils/calculations';
 import { User, Activity, HeartPulse, CheckCircle, Save, Sparkles, Scale } from 'lucide-react';
 import { CuteAvatar } from './CuteAvatar';
+import { DisclaimerBanner } from './DisclaimerBanner';
 
 interface UserProfileFormProps {
   initialProfile: UserProfile;
@@ -40,9 +41,12 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const updated = {
+    const updated: UserProfile = {
       ...profile,
       name: profile.name.trim() || 'Utente',
+      age: profile.age && profile.age > 0 ? profile.age : 30,
+      heightCm: profile.heightCm && profile.heightCm > 0 ? profile.heightCm : 175,
+      weightKg: profile.weightKg && profile.weightKg > 0 ? profile.weightKg : 70,
       isConfigured: true
     };
     onSaveProfile(updated);
@@ -198,8 +202,11 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = ({
               min={14}
               max={100}
               placeholder="es. 30"
-              value={profile.age || ''}
-              onChange={(e) => handleFieldChange('age', Math.max(14, Number(e.target.value)))}
+              value={profile.age && profile.age > 0 ? profile.age : ''}
+              onChange={(e) => {
+                const val = e.target.value;
+                handleFieldChange('age', val === '' ? 0 : Number(val));
+              }}
               className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all"
             />
           </div>
@@ -208,11 +215,14 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = ({
             <label className="block text-xs font-semibold text-slate-600 mb-1">Altezza (cm)</label>
             <input
               type="number"
-              min={120}
+              min={100}
               max={230}
               placeholder="es. 175"
-              value={profile.heightCm || ''}
-              onChange={(e) => handleFieldChange('heightCm', Math.max(100, Number(e.target.value)))}
+              value={profile.heightCm && profile.heightCm > 0 ? profile.heightCm : ''}
+              onChange={(e) => {
+                const val = e.target.value;
+                handleFieldChange('heightCm', val === '' ? 0 : Number(val));
+              }}
               className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all"
             />
           </div>
@@ -222,11 +232,14 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = ({
             <input
               type="number"
               step={0.5}
-              min={35}
+              min={30}
               max={250}
               placeholder="es. 70"
-              value={profile.weightKg || ''}
-              onChange={(e) => handleFieldChange('weightKg', Math.max(30, Number(e.target.value)))}
+              value={profile.weightKg && profile.weightKg > 0 ? profile.weightKg : ''}
+              onChange={(e) => {
+                const val = e.target.value;
+                handleFieldChange('weightKg', val === '' ? 0 : Number(val));
+              }}
               className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all font-semibold"
             />
           </div>
@@ -236,8 +249,11 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = ({
             <input
               type="number"
               placeholder="es. 82"
-              value={profile.waistCm || ''}
-              onChange={(e) => handleFieldChange('waistCm', e.target.value ? Number(e.target.value) : undefined)}
+              value={profile.waistCm && profile.waistCm > 0 ? profile.waistCm : ''}
+              onChange={(e) => {
+                const val = e.target.value;
+                handleFieldChange('waistCm', val === '' ? undefined : Number(val));
+              }}
               className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all"
             />
           </div>
@@ -247,8 +263,11 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = ({
             <input
               type="number"
               placeholder="es. 37"
-              value={profile.neckCm || ''}
-              onChange={(e) => handleFieldChange('neckCm', e.target.value ? Number(e.target.value) : undefined)}
+              value={profile.neckCm && profile.neckCm > 0 ? profile.neckCm : ''}
+              onChange={(e) => {
+                const val = e.target.value;
+                handleFieldChange('neckCm', val === '' ? undefined : Number(val));
+              }}
               className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all"
             />
           </div>
@@ -259,8 +278,11 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = ({
               <input
                 type="number"
                 placeholder="es. 95"
-                value={profile.hipCm || ''}
-                onChange={(e) => handleFieldChange('hipCm', e.target.value ? Number(e.target.value) : undefined)}
+                value={profile.hipCm && profile.hipCm > 0 ? profile.hipCm : ''}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  handleFieldChange('hipCm', val === '' ? undefined : Number(val));
+                }}
                 className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all"
               />
             </div>
@@ -272,11 +294,11 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = ({
         <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm">
           <div className="flex items-center gap-2">
             <span className="text-slate-500">Indice Massa Corporea (BMI):</span>
-            <span className="font-extrabold text-slate-900 text-base">{bmi}</span>
+            <span className="font-extrabold text-slate-900 text-base">{bmi > 0 ? bmi : '--'}</span>
             <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${
               bmi >= 18.5 && bmi < 25
                 ? 'bg-emerald-100 text-emerald-800'
-                : 'bg-amber-100 text-amber-800'
+                : bmi > 0 ? 'bg-amber-100 text-amber-800' : 'bg-slate-200 text-slate-600'
             }`}>
               {bmiCategory}
             </span>
@@ -459,6 +481,11 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = ({
           <div>Fibre consigliate: <span className="font-bold text-teal-400">{targets.fiberGramsMin}g</span></div>
         </div>
 
+      </div>
+
+      {/* Avvertenze e Disclaimer Medico spostato nella pagina del profilo */}
+      <div className="rounded-2xl overflow-hidden shadow-xs border border-amber-200">
+        <DisclaimerBanner />
       </div>
 
       {/* Pulsante di salvataggio a fondo pagina */}

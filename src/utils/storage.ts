@@ -5,10 +5,10 @@ const WEEK_PLAN_KEY = 'nutriplan_week_plan';
 
 export const DEFAULT_PROFILE: UserProfile = {
   name: '',
-  age: 30,
+  age: 0,
   gender: 'male',
-  heightCm: 175,
-  weightKg: 70,
+  heightCm: 0,
+  weightKg: 0,
   activityLevel: 'moderate',
   goal: 'maintain',
   dietType: 'mediterranean',
@@ -25,6 +25,17 @@ export function loadUserProfile(): UserProfile {
       // Assicura che la proprietà pathologies esista
       if (!Array.isArray(parsed.pathologies)) {
         parsed.pathologies = [];
+      }
+      // Se non è mai stato configurato dall'utente, azzera i campi fisici per non mostrare numeri pre-impostati
+      if (!parsed.isConfigured) {
+        return {
+          ...DEFAULT_PROFILE,
+          ...parsed,
+          age: (parsed.age && parsed.age !== 30) ? parsed.age : 0,
+          heightCm: (parsed.heightCm && parsed.heightCm !== 175) ? parsed.heightCm : 0,
+          weightKg: (parsed.weightKg && parsed.weightKg !== 70) ? parsed.weightKg : 0,
+          isConfigured: false
+        };
       }
       return parsed;
     }
