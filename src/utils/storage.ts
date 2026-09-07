@@ -14,6 +14,8 @@ export const DEFAULT_PROFILE: UserProfile = {
   dietType: 'mediterranean',
   mealsPerDay: 4,
   pathologies: [],
+  allergies: [],
+  customExcludedFoods: [],
   isConfigured: false
 };
 
@@ -25,6 +27,12 @@ export function loadUserProfile(): UserProfile {
       // Assicura che la proprietà pathologies esista
       if (!Array.isArray(parsed.pathologies)) {
         parsed.pathologies = [];
+      }
+      if (!Array.isArray(parsed.allergies)) {
+        parsed.allergies = [];
+      }
+      if (!Array.isArray(parsed.customExcludedFoods)) {
+        parsed.customExcludedFoods = [];
       }
       // Se non è mai stato configurato dall'utente, azzera i campi fisici per non mostrare numeri pre-impostati
       if (!parsed.isConfigured) {

@@ -46,6 +46,28 @@ export interface PathologyInfo {
   clinicalNotes: string;
 }
 
+export type AllergyId =
+  | 'gluten'        // Glutine / Frumento
+  | 'lactose'       // Lattosio e Latticini
+  | 'eggs'          // Uova e ovoprodotti
+  | 'nuts'          // Frutta a Guscio (Noci, Mandorle, Nocciole, Pistacchi)
+  | 'peanuts'       // Arachidi
+  | 'crustaceans'   // Crostacei e Molluschi
+  | 'fish'          // Pesce
+  | 'soy'           // Soia
+  | 'nickel'        // Sensibilità al Nichel (Pomodori, Cacao, Spinaci)
+  | 'histamine'     // Intolleranza all'Istamina (Tonno in scatola, salumi, formaggi stagionati)
+  | 'sesame';       // Semi di Sesamo
+
+export interface AllergyInfo {
+  id: AllergyId;
+  name: string;
+  badge: string;
+  type: 'allergia' | 'intolleranza';
+  description: string;
+  commonFoods: string[];
+}
+
 export interface UserProfile {
   name: string;
   age: number;
@@ -60,6 +82,8 @@ export interface UserProfile {
   dietType: DietType;
   mealsPerDay: number; // 3 to 6
   pathologies: PathologyId[];
+  allergies?: AllergyId[];
+  customExcludedFoods?: string[];
   isConfigured?: boolean;
   avatarStyle?: string;
 }

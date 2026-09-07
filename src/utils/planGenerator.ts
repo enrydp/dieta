@@ -24,6 +24,100 @@ export function isFoodAllowed(food: FoodItem, profile: UserProfile): boolean {
     }
   }
 
+  const nameLower = food.name.toLowerCase();
+  const idLower = food.id.toLowerCase();
+
+  // Allergie e Intolleranze Alimentari
+  const allergies = profile.allergies || [];
+  for (const allergy of allergies) {
+    // 1. Glutine
+    if (allergy === 'gluten' && !food.isGlutenFree) return false;
+
+    // 2. Lattosio
+    if (allergy === 'lactose' && (!food.isLactoseFree || food.category === 'proteins_dairy')) return false;
+
+    // 3. Uova
+    if (allergy === 'eggs' && (food.category === 'eggs' || nameLower.includes('uov') || nameLower.includes('album'))) return false;
+
+    // 4. Frutta a guscio (noci, mandorle, nocciole, pistacchi, anacardi)
+    if (allergy === 'nuts' && (
+      nameLower.includes('noc') || 
+      nameLower.includes('mandorl') || 
+      nameLower.includes('nocciol') || 
+      nameLower.includes('pistacch') || 
+      nameLower.includes('anacard')
+    )) return false;
+
+    // 5. Arachidi
+    if (allergy === 'peanuts' && nameLower.includes('arachid')) return false;
+
+    // 6. Crostacei e Molluschi
+    if (allergy === 'crustaceans' && (
+      nameLower.includes('gamber') || 
+      nameLower.includes('calamar') || 
+      nameLower.includes('cozz') || 
+      nameLower.includes('vongol') || 
+      nameLower.includes('polpo') || 
+      nameLower.includes('seppi') || 
+      nameLower.includes('crostace') ||
+      nameLower.includes('mazzancoll')
+    )) return false;
+
+    // 7. Pesce (esclude tutti i pesci)
+    if (allergy === 'fish' && food.category === 'proteins_fish' && !(
+      nameLower.includes('gamber') || 
+      nameLower.includes('calamar') || 
+      nameLower.includes('cozz') || 
+      nameLower.includes('vongol') || 
+      nameLower.includes('polpo') || 
+      nameLower.includes('seppi')
+    )) return false;
+
+    // 8. Soia
+    if (allergy === 'soy' && (
+      nameLower.includes('soia') || 
+      nameLower.includes('tofu') || 
+      nameLower.includes('edamame') || 
+      nameLower.includes('tempeh')
+    )) return false;
+
+    // 9. Sensibilità al Nichel
+    if (allergy === 'nickel' && (
+      nameLower.includes('pomodor') || 
+      nameLower.includes('spinac') || 
+      nameLower.includes('cacao') || 
+      nameLower.includes('cioccolat') || 
+      nameLower.includes('lenticchi') || 
+      nameLower.includes('ceci')
+    )) return false;
+
+    // 10. Istamina
+    if (allergy === 'histamine' && (
+      nameLower.includes('scatola') || 
+      nameLower.includes('salame') || 
+      nameLower.includes('prosciutto') || 
+      nameLower.includes('bresaola') || 
+      nameLower.includes('parmigiano') || 
+      nameLower.includes('grana') || 
+      nameLower.includes('stagionat')
+    )) return false;
+
+    // 11. Sesamo
+    if (allergy === 'sesame' && (
+      nameLower.includes('sesamo') || 
+      nameLower.includes('tahina')
+    )) return false;
+  }
+
+  // Alimenti sgraditi personalizzati inseriti manualmente
+  const customExclusions = profile.customExcludedFoods || [];
+  for (const exclusion of customExclusions) {
+    const clean = exclusion.trim().toLowerCase();
+    if (clean && (nameLower.includes(clean) || idLower.includes(clean))) {
+      return false;
+    }
+  }
+
   return true;
 }
 

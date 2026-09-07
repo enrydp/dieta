@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { UserProfile, Gender, ActivityLevel, FitnessGoal, DietType, PathologyId } from '../types/diet';
+import { UserProfile, Gender, ActivityLevel, FitnessGoal, DietType, PathologyId, AllergyId } from '../types/diet';
 import { PATHOLOGIES_DATA } from '../data/pathologies';
+import { ALLERGIES_DATA } from '../data/allergies';
 import { calculateBMI, calculateBodyFat, calculateMacroTargets } from '../utils/calculations';
-import { User, Activity, HeartPulse, CheckCircle, Save, Sparkles, Scale } from 'lucide-react';
+import { User, Activity, HeartPulse, CheckCircle, Save, Sparkles, Scale, ShieldAlert, Plus, X } from 'lucide-react';
 import { CuteAvatar } from './CuteAvatar';
 import { DisclaimerBanner } from './DisclaimerBanner';
 
@@ -17,6 +18,7 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = ({
 }) => {
   const [profile, setProfile] = useState<UserProfile>(initialProfile);
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [customFoodInput, setCustomFoodInput] = useState('');
 
   const targets = calculateMacroTargets(profile);
   const { bmi, category: bmiCategory } = calculateBMI(profile.weightKg || 70, profile.heightCm || 175);
@@ -36,6 +38,40 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = ({
         : [...currentPaths, pathId];
       return { ...prev, pathologies: updated };
     });
+    setSavedSuccess(false);
+  };
+
+  const toggleAllergy = (allergyId: AllergyId) => {
+    setProfile(prev => {
+      const current = prev.allergies || [];
+      const exists = current.includes(allergyId);
+      const updated = exists
+        ? current.filter(id => id !== allergyId)
+        : [...current, allergyId];
+      return { ...prev, allergies: updated };
+    });
+    setSavedSuccess(false);
+  };
+
+  const handleAddCustomExclusion = () => {
+    const trimmed = customFoodInput.trim();
+    if (!trimmed) return;
+    setProfile(prev => {
+      const current = prev.customExcludedFoods || [];
+      if (current.some(item => item.toLowerCase() === trimmed.toLowerCase())) {
+        return prev;
+      }
+      return { ...prev, customExcludedFoods: [...current, trimmed] };
+    });
+    setCustomFoodInput('');
+    setSavedSuccess(false);
+  };
+
+  const handleRemoveCustomExclusion = (foodName: string) => {
+    setProfile(prev => ({
+      ...prev,
+      customExcludedFoods: (prev.customExcludedFoods || []).filter(item => item !== foodName)
+    }));
     setSavedSuccess(false);
   };
 
@@ -387,12 +423,137 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = ({
 
       </div>
 
-      {/* Box 3: Patologie & Condizioni Cliniche */}
+      {/* Box 3: Allergie, Intolleranze & Esclusioni Alimentari */}
+      <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xs space-y-5">
+        <div className="border-b border-slate-100 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <h3 className="font-bold text-slate-800 text-base flex items-center gap-2">
+            <ShieldAlert className="w-5 h-5 text-amber-500" />
+            <span>3. Allergie, Intolleranze & Esclusioni Alimentari</span>
+          </h3>
+          <span className="text-xs text-slate-500 font-medium">
+            {(profile.allergies?.length || 0) + (profile.customExcludedFoods?.length || 0) > 0 ? (
+              <span className="font-bold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
+                {(profile.allergies?.length || 0) + (profile.customExcludedFoods?.length || 0)} esclusioni attive
+              </span>
+            ) : (
+              'Nessuna esclusione selezionata'
+            )}
+          </span>
+        </div>
+
+        <p className="text-xs text-slate-500 leading-relaxed">
+          Seleziona le tue allergie o intolleranze diagnosticate. Gli alimenti contenenti questi allergeni verranno <strong>rigorosamente esclusi</strong> da tutti i pasti generati. Puoi anche aggiungere altri cibi che non gradisci o non puoi mangiare.
+        </p>
+
+        {/* Griglia Allergie Ufficiali */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-1">
+          {ALLERGIES_DATA.map(allergy => {
+            const isSelected = profile.allergies && profile.allergies.includes(allergy.id);
+            return (
+              <div
+                key={allergy.id}
+                onClick={() => toggleAllergy(allergy.id)}
+                className={`p-3.5 rounded-2xl border cursor-pointer transition-all flex flex-col justify-between select-none ${
+                  isSelected
+                    ? 'border-amber-500 bg-amber-50/70 ring-2 ring-amber-400/30 shadow-xs scale-101'
+                    : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50/80 bg-white'
+                }`}
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-1.5">
+                    <span className="font-black text-slate-900 text-sm">{allergy.name}</span>
+                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider ${
+                      allergy.type === 'allergia' 
+                        ? 'bg-rose-100 text-rose-800' 
+                        : 'bg-amber-100 text-amber-800'
+                    }`}>
+                      {allergy.type}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-600 line-clamp-2 leading-snug">
+                    {allergy.description}
+                  </p>
+                </div>
+
+                <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs">
+                  <span className="text-[11px] font-bold text-slate-500">{allergy.badge}</span>
+                  <div className={`w-5 h-5 rounded-full flex items-center justify-center transition-all ${
+                    isSelected ? 'bg-amber-600 text-white' : 'border border-slate-300 bg-white'
+                  }`}>
+                    {isSelected && <CheckCircle className="w-3.5 h-3.5 text-white" />}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Sezione Alimenti Sgraditi / Esclusioni Personalizzate */}
+        <div className="mt-4 pt-4 border-t border-slate-100 bg-slate-50/70 p-4 rounded-2xl">
+          <label className="block text-xs font-bold text-slate-700 mb-1">
+            Altri alimenti specifici da escludere (non graditi o intolleranze personali)
+          </label>
+          <p className="text-[11px] text-slate-500 mb-2.5">
+            Digita il nome di un alimento che non puoi o non vuoi mangiare (es. <em>funghi, peperoni, maiale, tonno</em>) e premi Aggiungi:
+          </p>
+
+          <div className="flex gap-2 mb-3">
+            <input
+              type="text"
+              placeholder="es. funghi, peperoni, maiale..."
+              value={customFoodInput}
+              onChange={(e) => setCustomFoodInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleAddCustomExclusion();
+                }
+              }}
+              className="flex-1 px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 transition-all"
+            />
+            <button
+              type="button"
+              onClick={handleAddCustomExclusion}
+              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Aggiungi</span>
+            </button>
+          </div>
+
+          {/* Chips degli alimenti esclusi */}
+          {profile.customExcludedFoods && profile.customExcludedFoods.length > 0 ? (
+            <div className="flex flex-wrap gap-2 pt-1">
+              {profile.customExcludedFoods.map((food) => (
+                <span
+                  key={food}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 bg-white text-rose-800 text-xs font-bold rounded-xl border border-rose-200 shadow-2xs"
+                >
+                  <span>🚫 {food}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveCustomExclusion(food)}
+                    className="hover:bg-rose-100 text-rose-600 rounded-full p-0.5 transition-colors cursor-pointer"
+                    title="Rimuovi esclusione"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </span>
+              ))}
+            </div>
+          ) : (
+            <span className="text-[11px] text-slate-400 italic">Nessun alimento specifico escluso manualmente.</span>
+          )}
+        </div>
+
+      </div>
+
+      {/* Box 4: Patologie & Condizioni Cliniche */}
       <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xs space-y-4">
         <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
           <h3 className="font-bold text-slate-800 text-base flex items-center gap-2">
             <HeartPulse className="w-5 h-5 text-rose-500" />
-            <span>3. Patologie & Condizioni Clinico-Nutrizionali</span>
+            <span>4. Patologie & Condizioni Clinico-Nutrizionali</span>
           </h3>
           <span className="text-xs text-slate-500">
             {profile.pathologies && profile.pathologies.length > 0 ? (
