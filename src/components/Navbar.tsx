@@ -1,4 +1,6 @@
 import React from 'react';
+import { UserProfile } from '../types/diet';
+import { CuteAvatar } from './CuteAvatar';
 import { Utensils, CalendarDays, ShoppingBag, User, BookOpen, Printer, RefreshCw } from 'lucide-react';
 
 export type NavTab = 'day' | 'week' | 'grocery' | 'profile' | 'pathologies';
@@ -9,6 +11,7 @@ interface NavbarProps {
   onPrintClick: () => void;
   onRegenerateClick: () => void;
   activePathologyCount: number;
+  profile: UserProfile;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -16,38 +19,39 @@ export const Navbar: React.FC<NavbarProps> = ({
   onSelectTab,
   onPrintClick,
   onRegenerateClick,
-  activePathologyCount
+  activePathologyCount,
+  profile
 }) => {
   return (
     <>
       {/* Top Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs no-print">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 gap-2">
             
-            {/* Logo & Brand */}
-            <div className="flex items-center gap-3 cursor-pointer" onClick={() => onSelectTab('day')}>
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
+            {/* Logo & Brand con dicitura : By Barone soft */}
+            <div className="flex items-center gap-2.5 cursor-pointer shrink-0" onClick={() => onSelectTab('day')}>
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20 shrink-0">
                 <Utensils className="w-5 h-5" />
               </div>
               <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-lg text-slate-900 tracking-tight">NutriPlan</span>
-                  <span className="text-[10px] font-semibold uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
-                    Pro
+                <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                  <span className="font-extrabold text-base sm:text-lg text-slate-900 tracking-tight">NutriPlan</span>
+                  <span className="text-[11px] sm:text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-300/80 px-2 py-0.5 rounded-md shadow-2xs whitespace-nowrap">
+                    : By Barone soft
                   </span>
                 </div>
-                <p className="text-xs text-slate-500 hidden sm:block">Piani alimentari scientifici e personalizzati</p>
+                <p className="text-[11px] text-slate-500 hidden sm:block">Piani alimentari scientifici e personalizzati</p>
               </div>
             </div>
 
             {/* Desktop Navigation Links */}
-            <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
+            <nav className="hidden lg:flex items-center space-x-1">
               <button
                 onClick={() => onSelectTab('day')}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all ${
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                   currentTab === 'day'
-                    ? 'bg-emerald-50 text-emerald-700'
+                    ? 'bg-emerald-50 text-emerald-700 font-bold'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
@@ -57,9 +61,9 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               <button
                 onClick={() => onSelectTab('week')}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all ${
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                   currentTab === 'week'
-                    ? 'bg-emerald-50 text-emerald-700'
+                    ? 'bg-emerald-50 text-emerald-700 font-bold'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
@@ -69,9 +73,9 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               <button
                 onClick={() => onSelectTab('grocery')}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all ${
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                   currentTab === 'grocery'
-                    ? 'bg-emerald-50 text-emerald-700'
+                    ? 'bg-emerald-50 text-emerald-700 font-bold'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
@@ -81,9 +85,9 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               <button
                 onClick={() => onSelectTab('profile')}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all ${
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                   currentTab === 'profile'
-                    ? 'bg-emerald-50 text-emerald-700'
+                    ? 'bg-emerald-50 text-emerald-700 font-bold'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
@@ -93,9 +97,9 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               <button
                 onClick={() => onSelectTab('pathologies')}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all relative ${
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all relative ${
                   currentTab === 'pathologies'
-                    ? 'bg-emerald-50 text-emerald-700'
+                    ? 'bg-emerald-50 text-emerald-700 font-bold'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
@@ -109,11 +113,36 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             </nav>
 
-            {/* Quick Actions (Desktop & Mobile) */}
-            <div className="flex items-center gap-2">
+            {/* Avatar Utente con Nome & Azioni Rapide */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              
+              {/* Avatar e Nome Visibile in Alto da Ogni Schermata */}
+              <div
+                onClick={() => onSelectTab('profile')}
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-slate-50 hover:bg-emerald-50 border border-slate-200/90 hover:border-emerald-300 transition-all cursor-pointer group"
+                title="Visualizza e modifica il tuo profilo"
+              >
+                <CuteAvatar
+                  gender={profile.gender}
+                  avatarStyle={profile.avatarStyle}
+                  name={profile.name}
+                  size="sm"
+                  showBadge={true}
+                />
+                <div className="flex flex-col text-left">
+                  <span className="text-xs font-bold text-slate-900 group-hover:text-emerald-700 leading-tight max-w-[90px] sm:max-w-[120px] truncate">
+                    {profile.name && profile.name.trim() ? profile.name : 'Profilo'}
+                  </span>
+                  <span className="text-[10px] text-slate-500 group-hover:text-emerald-600 font-medium">
+                    {profile.isConfigured ? `${profile.weightKg || '--'} kg` : 'Configura'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Azioni rapide */}
               <button
                 onClick={onRegenerateClick}
-                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
                 title="Rigenera il piano alimentare con nuove combinazioni"
               >
                 <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
@@ -122,10 +151,11 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               <button
                 onClick={onPrintClick}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 text-xs font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition-colors cursor-pointer"
+                title="Stampa o Salva PDF"
               >
                 <Printer className="w-3.5 h-3.5" />
-                <span>Stampa / PDF</span>
+                <span className="hidden sm:inline">Stampa / PDF</span>
               </button>
             </div>
 
@@ -139,7 +169,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           
           <button
             onClick={() => onSelectTab('day')}
-            className={`flex flex-col items-center py-1 px-2 rounded-lg transition-colors ${
+            className={`flex flex-col items-center py-1 px-2 rounded-lg transition-colors cursor-pointer ${
               currentTab === 'day' ? 'text-emerald-600 font-semibold' : 'text-slate-500 hover:text-slate-900'
             }`}
           >
@@ -149,7 +179,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={() => onSelectTab('week')}
-            className={`flex flex-col items-center py-1 px-2 rounded-lg transition-colors ${
+            className={`flex flex-col items-center py-1 px-2 rounded-lg transition-colors cursor-pointer ${
               currentTab === 'week' ? 'text-emerald-600 font-semibold' : 'text-slate-500 hover:text-slate-900'
             }`}
           >
@@ -159,7 +189,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={() => onSelectTab('grocery')}
-            className={`flex flex-col items-center py-1 px-2 rounded-lg transition-colors ${
+            className={`flex flex-col items-center py-1 px-2 rounded-lg transition-colors cursor-pointer ${
               currentTab === 'grocery' ? 'text-emerald-600 font-semibold' : 'text-slate-500 hover:text-slate-900'
             }`}
           >
@@ -169,7 +199,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={() => onSelectTab('profile')}
-            className={`flex flex-col items-center py-1 px-2 rounded-lg transition-colors ${
+            className={`flex flex-col items-center py-1 px-2 rounded-lg transition-colors cursor-pointer ${
               currentTab === 'profile' ? 'text-emerald-600 font-semibold' : 'text-slate-500 hover:text-slate-900'
             }`}
           >
@@ -179,7 +209,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={() => onSelectTab('pathologies')}
-            className={`flex flex-col items-center py-1 px-2 rounded-lg transition-colors relative ${
+            className={`flex flex-col items-center py-1 px-2 rounded-lg transition-colors cursor-pointer relative ${
               currentTab === 'pathologies' ? 'text-emerald-600 font-semibold' : 'text-slate-500 hover:text-slate-900'
             }`}
           >

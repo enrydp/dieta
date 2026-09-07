@@ -144,6 +144,7 @@ export function App() {
         onPrintClick={() => setIsPrintModalOpen(true)}
         onRegenerateClick={handleRegenerateAll}
         activePathologyCount={(profile.pathologies || []).length}
+        profile={profile}
       />
 
       {/* Banner onboarding se il profilo non è ancora configurato */}

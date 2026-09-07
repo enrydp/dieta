@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { UserProfile, Gender, ActivityLevel, FitnessGoal, DietType, PathologyId } from '../types/diet';
 import { PATHOLOGIES_DATA } from '../data/pathologies';
 import { calculateBMI, calculateBodyFat, calculateMacroTargets } from '../utils/calculations';
-import { User, Activity, HeartPulse, CheckCircle, Save, Sparkles, Scale } from 'lucide-react';
+import { User, Activity, HeartPulse, CheckCircle, Save, Sparkles, Scale, Smile } from 'lucide-react';
+import { CuteAvatar, AVATAR_OPTIONS } from './CuteAvatar';
 
 interface UserProfileFormProps {
   initialProfile: UserProfile;
@@ -93,8 +94,57 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = ({
       <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xs space-y-5">
         <h3 className="font-bold text-slate-800 text-base flex items-center gap-2 border-b border-slate-100 pb-3">
           <Scale className="w-4 h-4 text-emerald-600" />
-          <span>1. Misure Antropometriche</span>
+          <span>1. Misure Antropometriche & Avatar Personale</span>
         </h3>
+
+        {/* Anteprima e Scelta Avatar Simpatico */}
+        <div className="p-4 bg-gradient-to-r from-slate-50 to-emerald-50/40 rounded-2xl border border-slate-200/80 flex flex-col sm:flex-row items-center gap-4">
+          <div className="flex items-center gap-3 shrink-0">
+            <CuteAvatar
+              gender={profile.gender}
+              avatarStyle={profile.avatarStyle}
+              name={profile.name}
+              size="xl"
+              showBadge={true}
+            />
+            <div>
+              <div className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Il Tuo Avatar</div>
+              <div className="text-base font-extrabold text-slate-900">
+                {profile.name && profile.name.trim() ? profile.name : 'Il tuo Nome'}
+              </div>
+              <div className="text-xs text-emerald-700 font-medium">
+                {profile.gender === 'male' ? 'Uomo' : 'Donna'} • {profile.age || '--'} anni
+              </div>
+            </div>
+          </div>
+
+          <div className="flex-1 w-full border-t sm:border-t-0 sm:border-l border-slate-200 sm:pl-4 pt-3 sm:pt-0">
+            <div className="text-xs font-bold text-slate-700 mb-2 flex items-center gap-1.5">
+              <Smile className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Scegli lo stile del tuo Avatar (visibile in ogni schermata in alto):</span>
+            </div>
+            <div className="flex gap-2 overflow-x-auto pb-1.5 no-scrollbar">
+              {AVATAR_OPTIONS.filter(a => a.gender === 'any' || a.gender === profile.gender).map(av => {
+                const isSelected = (profile.avatarStyle === av.id) || (!profile.avatarStyle && av.gender === profile.gender);
+                return (
+                  <button
+                    key={av.id}
+                    type="button"
+                    onClick={() => handleFieldChange('avatarStyle', av.id)}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                      isSelected
+                        ? 'border-emerald-600 bg-emerald-100 text-emerald-900 shadow-xs ring-2 ring-emerald-500/20'
+                        : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                    }`}
+                  >
+                    <span className="text-base">{av.emoji}</span>
+                    <span>{av.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           
