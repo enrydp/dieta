@@ -133,6 +133,18 @@ export const WeekPlanView: React.FC<WeekPlanViewProps> = ({
         })}
       </div>
 
+      {/* Pulsante Grande a Fine Pagina: Rigenera Intera Settimana */}
+      <div className="pt-6 pb-10 flex justify-center">
+        <button
+          onClick={onRegenerateAll}
+          className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 active:scale-98 text-white font-black text-sm sm:text-base rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2.5 cursor-pointer"
+          title="Rigenera tutti i 7 giorni della settimana con nuove combinazioni alimentari"
+        >
+          <RefreshCw className="w-5 h-5" />
+          <span>Rigenera Intera Settimana con Nuovi Alimenti</span>
+        </button>
+      </div>
+
     </div>
   );
 };

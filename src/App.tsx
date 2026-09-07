@@ -245,6 +245,7 @@ export function App() {
               targets={targets}
               onUpdateMeal={handleUpdateMeal}
               onRegenerateDay={handleRegenerateDay}
+              onRegenerateAll={handleRegenerateAll}
               onOpenPathologyModal={() => setCurrentTab('pathologies')}
               onOpenPrintModal={() => setIsPrintModalOpen(true)}
             />

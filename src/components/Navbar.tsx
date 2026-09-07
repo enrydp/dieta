@@ -1,15 +1,15 @@
 import React from 'react';
 import { UserProfile } from '../types/diet';
 import { CuteAvatar } from './CuteAvatar';
-import { Utensils, CalendarDays, ShoppingBag, User, BookOpen, RefreshCw } from 'lucide-react';
+import { Utensils, CalendarDays, ShoppingBag, User, BookOpen } from 'lucide-react';
 
 export type NavTab = 'day' | 'week' | 'grocery' | 'profile' | 'pathologies';
 
 interface NavbarProps {
   currentTab: NavTab;
   onSelectTab: (tab: NavTab) => void;
-  onPrintClick: () => void;
-  onRegenerateClick: () => void;
+  onPrintClick?: () => void;
+  onRegenerateClick?: () => void;
   activePathologyCount: number;
   profile: UserProfile;
 }
@@ -142,18 +142,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </span>
                 </div>
               </div>
-
-              {/* Azione rapida Rigenera (visibile sia su mobile che su desktop) */}
-              {profile.isConfigured && (
-                <button
-                  onClick={onRegenerateClick}
-                  className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 rounded-xl transition-colors cursor-pointer shrink-0"
-                  title="Rigenera l'intero piano alimentare con nuove combinazioni"
-                >
-                  <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
-                  <span>Rigenera</span>
-                </button>
-              )}
             </div>
 
           </div>

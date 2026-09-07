@@ -12,6 +12,7 @@ interface DayPlanViewProps {
   targets: MacroTargets;
   onUpdateMeal: (meal: MealPlan) => void;
   onRegenerateDay: () => void;
+  onRegenerateAll?: () => void;
   onOpenPathologyModal: () => void;
   onOpenPrintModal: () => void;
 }
@@ -24,6 +25,7 @@ export const DayPlanView: React.FC<DayPlanViewProps> = ({
   targets,
   onUpdateMeal,
   onRegenerateDay,
+  onRegenerateAll,
   onOpenPathologyModal,
   onOpenPrintModal
 }) => {
@@ -115,6 +117,29 @@ export const DayPlanView: React.FC<DayPlanViewProps> = ({
             onUpdateMeal={onUpdateMeal}
           />
         ))}
+      </div>
+
+      {/* Pulsanti Grandi a Fine Pagina: Rigenera Pasti o Intero Piano */}
+      <div className="pt-6 pb-10 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3.5">
+        <button
+          onClick={onRegenerateDay}
+          className="flex-1 sm:flex-initial px-6 py-4 bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-800 font-extrabold text-sm sm:text-base rounded-2xl border-2 border-slate-200 shadow-sm hover:border-slate-300 active:scale-98 transition-all flex items-center justify-center gap-2.5 cursor-pointer"
+          title="Varia e rigenera i pasti di questa specifica giornata"
+        >
+          <RefreshCw className="w-5 h-5 text-emerald-600" />
+          <span>Varia Pasti di {dayPlan.dayName}</span>
+        </button>
+
+        {onRegenerateAll && (
+          <button
+            onClick={onRegenerateAll}
+            className="flex-1 sm:flex-initial px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 active:scale-98 text-white font-black text-sm sm:text-base rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2.5 cursor-pointer"
+            title="Rigenera con nuovi alimenti tutti i 7 giorni della settimana"
+          >
+            <Sparkles className="w-5 h-5 text-emerald-200" />
+            <span>Rigenera Intero Piano Alimentare</span>
+          </button>
+        )}
       </div>
 
     </div>
