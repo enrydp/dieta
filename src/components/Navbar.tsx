@@ -31,17 +31,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             
             {/* Logo & Brand con dicitura : By Barone soft */}
             <div className="flex items-center gap-2.5 cursor-pointer shrink-0" onClick={() => onSelectTab('day')}>
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20 shrink-0">
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 via-emerald-500 to-teal-400 flex items-center justify-center text-white shadow-md shadow-emerald-500/25 shrink-0">
                 <Utensils className="w-5 h-5" />
               </div>
               <div>
                 <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                  <span className="font-extrabold text-base sm:text-lg text-slate-900 tracking-tight">NutriPlan</span>
-                  <span className="text-[11px] sm:text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-300/80 px-2 py-0.5 rounded-md shadow-2xs whitespace-nowrap">
+                  <span className="font-black text-lg sm:text-xl text-slate-900 tracking-tight">NutriPlan</span>
+                  <span className="text-xs font-black text-emerald-800 bg-emerald-100 border border-emerald-300/80 px-2 py-0.5 rounded-lg shadow-2xs whitespace-nowrap">
                     : By Barone soft
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-500 hidden sm:block">Piani alimentari scientifici e personalizzati</p>
+                <p className="text-[11px] text-slate-500 hidden sm:block font-medium">Piani alimentari intelligenti & clinici</p>
               </div>
             </div>
 
@@ -119,21 +119,22 @@ export const Navbar: React.FC<NavbarProps> = ({
               {/* Avatar e Nome Visibile in Alto da Ogni Schermata */}
               <div
                 onClick={() => onSelectTab('profile')}
-                className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-slate-50 hover:bg-emerald-50 border border-slate-200/90 hover:border-emerald-300 transition-all cursor-pointer group"
-                title="Visualizza e modifica il tuo profilo"
+                className="flex items-center gap-2 sm:gap-2.5 px-3 py-1.5 rounded-2xl bg-white hover:bg-emerald-50/80 border-2 border-slate-200/90 hover:border-emerald-400 shadow-xs hover:shadow-md transition-all cursor-pointer group"
+                title="Visualizza e modifica il tuo profilo e avatar"
               >
                 <CuteAvatar
                   gender={profile.gender}
                   avatarStyle={profile.avatarStyle}
                   name={profile.name}
-                  size="sm"
+                  size="md"
                   showBadge={true}
                 />
                 <div className="flex flex-col text-left">
-                  <span className="text-xs font-bold text-slate-900 group-hover:text-emerald-700 leading-tight max-w-[90px] sm:max-w-[120px] truncate">
+                  <span className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-emerald-700 leading-tight max-w-[95px] sm:max-w-[140px] truncate">
                     {profile.name && profile.name.trim() ? profile.name : 'Profilo'}
                   </span>
-                  <span className="text-[10px] text-slate-500 group-hover:text-emerald-600 font-medium">
+                  <span className="text-[10px] text-emerald-700 font-bold flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                     {profile.isConfigured ? `${profile.weightKg || '--'} kg` : 'Configura'}
                   </span>
                 </div>

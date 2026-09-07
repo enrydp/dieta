@@ -97,33 +97,41 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = ({
           <span>1. Misure Antropometriche & Avatar Personale</span>
         </h3>
 
-        {/* Anteprima e Scelta Avatar Simpatico */}
-        <div className="p-4 bg-gradient-to-r from-slate-50 to-emerald-50/40 rounded-2xl border border-slate-200/80 flex flex-col sm:flex-row items-center gap-4">
-          <div className="flex items-center gap-3 shrink-0">
-            <CuteAvatar
-              gender={profile.gender}
-              avatarStyle={profile.avatarStyle}
-              name={profile.name}
-              size="xl"
-              showBadge={true}
-            />
+        {/* Anteprima e Scelta Avatar Simpatico Stile Cartoon */}
+        <div className="p-5 bg-gradient-to-r from-emerald-50/80 via-teal-50/50 to-sky-50/60 rounded-3xl border-2 border-emerald-200/80 shadow-xs flex flex-col md:flex-row items-center gap-5">
+          
+          <div className="flex items-center gap-4 shrink-0">
+            <div className="relative">
+              <CuteAvatar
+                gender={profile.gender}
+                avatarStyle={profile.avatarStyle}
+                name={profile.name}
+                size="xl"
+                showBadge={true}
+              />
+              <span className="absolute -top-1 -right-1 bg-amber-400 text-slate-900 text-[10px] font-black px-1.5 py-0.5 rounded-full shadow-xs border border-white">
+                PRO
+              </span>
+            </div>
             <div>
-              <div className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Il Tuo Avatar</div>
-              <div className="text-base font-extrabold text-slate-900">
-                {profile.name && profile.name.trim() ? profile.name : 'Il tuo Nome'}
+              <span className="text-[11px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-100/80 px-2.5 py-0.5 rounded-md">
+                Il Tuo Personaggio Cartoon
+              </span>
+              <div className="text-xl font-black text-slate-900 mt-1">
+                {profile.name && profile.name.trim() ? profile.name : 'Il Tuo Nome'}
               </div>
-              <div className="text-xs text-emerald-700 font-medium">
-                {profile.gender === 'male' ? 'Uomo' : 'Donna'} • {profile.age || '--'} anni
+              <div className="text-xs text-slate-600 font-semibold mt-0.5">
+                {profile.gender === 'male' ? 'Uomo' : 'Donna'} • {profile.age || '--'} anni • {profile.weightKg || '--'} kg
               </div>
             </div>
           </div>
 
-          <div className="flex-1 w-full border-t sm:border-t-0 sm:border-l border-slate-200 sm:pl-4 pt-3 sm:pt-0">
-            <div className="text-xs font-bold text-slate-700 mb-2 flex items-center gap-1.5">
-              <Smile className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Scegli lo stile del tuo Avatar (visibile in ogni schermata in alto):</span>
+          <div className="flex-1 w-full border-t md:border-t-0 md:border-l border-emerald-200/80 md:pl-5 pt-4 md:pt-0">
+            <div className="text-xs font-black text-slate-800 mb-2 flex items-center gap-1.5">
+              <Smile className="w-4 h-4 text-emerald-600" />
+              <span>Scegli il tuo stile Cartoon preferito (visibile in alto in tutte le schermate):</span>
             </div>
-            <div className="flex gap-2 overflow-x-auto pb-1.5 no-scrollbar">
+            <div className="flex gap-2.5 overflow-x-auto pb-2 no-scrollbar">
               {AVATAR_OPTIONS.filter(a => a.gender === 'any' || a.gender === profile.gender).map(av => {
                 const isSelected = (profile.avatarStyle === av.id) || (!profile.avatarStyle && av.gender === profile.gender);
                 return (
@@ -131,19 +139,29 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = ({
                     key={av.id}
                     type="button"
                     onClick={() => handleFieldChange('avatarStyle', av.id)}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                    className={`flex items-center gap-2.5 px-3 py-2 rounded-2xl border text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                       isSelected
-                        ? 'border-emerald-600 bg-emerald-100 text-emerald-900 shadow-xs ring-2 ring-emerald-500/20'
-                        : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                        ? 'border-emerald-600 bg-emerald-100/90 text-emerald-950 shadow-md ring-2 ring-emerald-500/30 scale-102'
+                        : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300'
                     }`}
                   >
-                    <span className="text-base">{av.emoji}</span>
-                    <span>{av.label}</span>
+                    <CuteAvatar
+                      gender={av.gender === 'female' ? 'female' : 'male'}
+                      avatarStyle={av.id}
+                      size="sm"
+                    />
+                    <div className="text-left">
+                      <div className="font-extrabold text-xs">{av.name}</div>
+                      <div className="text-[10px] text-slate-500 font-medium">
+                        {av.label.split('(')[1]?.replace(')', '') || ''}
+                      </div>
+                    </div>
                   </button>
                 );
               })}
             </div>
           </div>
+
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
