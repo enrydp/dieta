@@ -80,11 +80,11 @@ export const DayPlanView: React.FC<DayPlanViewProps> = ({
 
         <button
           onClick={onRegenerateDay}
-          className="p-2 sm:px-3 sm:py-2 text-xs font-semibold text-slate-600 hover:text-emerald-700 bg-slate-50 hover:bg-emerald-50 rounded-xl border border-slate-200 transition-colors flex items-center gap-1.5 shrink-0"
+          className="p-2 sm:px-3 sm:py-2 text-xs font-semibold text-slate-600 hover:text-emerald-700 bg-slate-50 hover:bg-emerald-50 rounded-xl border border-slate-200 transition-colors flex items-center gap-1.5 shrink-0 cursor-pointer"
           title="Rigenera solo questo giorno"
         >
           <RefreshCw className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Varia Giorno</span>
+          <span className="text-[11px] sm:text-xs font-bold">Varia Giorno</span>
         </button>
 
         <button

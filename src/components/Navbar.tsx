@@ -1,7 +1,7 @@
 import React from 'react';
 import { UserProfile } from '../types/diet';
 import { CuteAvatar } from './CuteAvatar';
-import { Utensils, CalendarDays, ShoppingBag, User, BookOpen, Printer, RefreshCw, FileDown } from 'lucide-react';
+import { Utensils, CalendarDays, ShoppingBag, User, BookOpen, RefreshCw } from 'lucide-react';
 
 export type NavTab = 'day' | 'week' | 'grocery' | 'profile' | 'pathologies';
 
@@ -143,27 +143,16 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </div>
               </div>
 
-              {/* Azioni rapide (visibili solo se il piano è generato/configurato) */}
+              {/* Azione rapida Rigenera (visibile sia su mobile che su desktop) */}
               {profile.isConfigured && (
-                <>
-                  <button
-                    onClick={onRegenerateClick}
-                    className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
-                    title="Rigenera il piano alimentare con nuove combinazioni"
-                  >
-                    <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
-                    <span>Rigenera</span>
-                  </button>
-
-                  <button
-                    onClick={onPrintClick}
-                    className="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 rounded-xl shadow-xs transition-all cursor-pointer ring-2 ring-emerald-500/20"
-                    title="Stampa o Salva PDF"
-                  >
-                    <FileDown className="w-3.5 h-3.5" />
-                    <span className="font-extrabold text-xs">PDF</span>
-                  </button>
-                </>
+                <button
+                  onClick={onRegenerateClick}
+                  className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 rounded-xl transition-colors cursor-pointer shrink-0"
+                  title="Rigenera l'intero piano alimentare con nuove combinazioni"
+                >
+                  <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
+                  <span>Rigenera</span>
+                </button>
               )}
             </div>
 
