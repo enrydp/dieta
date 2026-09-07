@@ -3,7 +3,8 @@ import { UserProfile, Gender, ActivityLevel, FitnessGoal, DietType, PathologyId 
 import { PATHOLOGIES_DATA } from '../data/pathologies';
 import { calculateBMI, calculateBodyFat, calculateMacroTargets } from '../utils/calculations';
 import { User, Activity, HeartPulse, CheckCircle, Save, Sparkles, Scale, Smile } from 'lucide-react';
-import { CuteAvatar, AVATAR_OPTIONS } from './CuteAvatar';
+import { CuteAvatar } from './CuteAvatar';
+import { AVATAR_OPTIONS } from '../data/avatars';
 
 interface UserProfileFormProps {
   initialProfile: UserProfile;
