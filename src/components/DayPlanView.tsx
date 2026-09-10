@@ -30,6 +30,7 @@ export const DayPlanView: React.FC<DayPlanViewProps> = ({
   onOpenPrintModal
 }) => {
   const dayLabels = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
+  const todayIndex = (new Date().getDay() + 6) % 7;
 
   return (
     <div className="space-y-4 sm:space-y-6 max-w-5xl mx-auto">
@@ -64,17 +65,27 @@ export const DayPlanView: React.FC<DayPlanViewProps> = ({
         <div className="flex items-center gap-1 sm:gap-2 flex-1">
           {dayLabels.map((label, idx) => {
             const isSelected = activeDayIndex === idx;
+            const isToday = todayIndex === idx;
             return (
               <button
                 key={label}
                 onClick={() => onSelectDayIndex(idx)}
-                className={`flex-1 py-2 sm:py-2.5 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+                className={`flex-1 py-1.5 sm:py-2 px-1 sm:px-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex flex-col items-center justify-center ${
                   isSelected
                     ? 'bg-emerald-600 text-white shadow-xs scale-102'
-                    : 'bg-slate-50 text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                    : isToday
+                      ? 'bg-emerald-50 text-emerald-800 border border-emerald-300/80 hover:bg-emerald-100'
+                      : 'bg-slate-50 text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                 }`}
               >
-                {label}
+                <span>{label}</span>
+                {isToday && (
+                  <span className={`text-[9px] font-black uppercase tracking-wider leading-none mt-0.5 ${
+                    isSelected ? 'text-emerald-100' : 'text-emerald-600'
+                  }`}>
+                    Oggi
+                  </span>
+                )}
               </button>
             );
           })}

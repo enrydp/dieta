@@ -11,6 +11,7 @@ import { GroceryListView } from './components/GroceryListView';
 import { UserProfileForm } from './components/UserProfileForm';
 import { PathologyInfoModal } from './components/PathologyInfoModal';
 import { PrintExportModal } from './components/PrintExportModal';
+import { RecipesView } from './components/RecipesView';
 import { Sparkles, CheckCircle2, UserCheck, ArrowRight, Utensils, FileDown } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -84,11 +85,24 @@ export function App() {
     return generateWeekPlan(initial);
   });
   
-  const [activeDayIndex, setActiveDayIndex] = useState<number>(0);
+  const getTodayIndex = () => (new Date().getDay() + 6) % 7;
+  const [activeDayIndex, setActiveDayIndex] = useState<number>(() => getTodayIndex());
   // Se il profilo non è ancora stato configurato, apri direttamente sulla scheda profilo
   const [currentTab, setCurrentTab] = useState<NavTab>(() => profile.isConfigured ? 'day' : 'profile');
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
   const [successToast, setSuccessToast] = useState<string | null>(null);
+
+  const handleTodayClick = () => {
+    setActiveDayIndex(getTodayIndex());
+    setCurrentTab('day');
+  };
+
+  const handleSelectTab = (tab: NavTab) => {
+    if (tab === 'day') {
+      setActiveDayIndex(getTodayIndex());
+    }
+    setCurrentTab(tab);
+  };
 
   const targets = calculateMacroTargets(profile);
   const hasPlan = Boolean(profile.isConfigured && weekPlan && weekPlan.length === 7);
@@ -134,7 +148,7 @@ export function App() {
 
     // Passa immediatamente alla visualizzazione del piano giornaliero per far vedere il risultato
     setCurrentTab('day');
-    setActiveDayIndex(0);
+    setActiveDayIndex(getTodayIndex());
 
     // Effetto visivo e toast di successo
     try {
@@ -200,7 +214,8 @@ export function App() {
       {/* Navbar Responsiva */}
       <Navbar
         currentTab={currentTab}
-        onSelectTab={setCurrentTab}
+        onSelectTab={handleSelectTab}
+        onTodayClick={handleTodayClick}
         onPrintClick={() => setIsPrintModalOpen(true)}
         onRegenerateClick={handleRegenerateAll}
         activePathologyCount={(profile.pathologies || []).length}
@@ -285,6 +300,10 @@ export function App() {
             initialProfile={profile}
             onSaveProfile={handleSaveProfile}
           />
+        )}
+
+        {currentTab === 'recipes' && (
+          <RecipesView profile={profile} />
         )}
 
         {currentTab === 'pathologies' && (
