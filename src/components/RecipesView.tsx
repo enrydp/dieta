@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { RECIPES_DATABASE } from '../data/recipes';
 import { RecipeItem, RecipeCategory } from '../types/recipe';
 import { UserProfile } from '../types/diet';
@@ -90,7 +90,7 @@ const RecipeCard: React.FC<{ recipe: RecipeItem; onSelect: (r: RecipeItem) => vo
         </div>
         <div className="flex items-center gap-1">
           <Users className="w-3.5 h-3.5" />
-          <span>{recipe.servings} persone</span>
+          <span>{recipe.servings} {recipe.servings === 1 ? 'persona' : 'persone'}</span>
         </div>
       </div>
     </div>
@@ -98,16 +98,39 @@ const RecipeCard: React.FC<{ recipe: RecipeItem; onSelect: (r: RecipeItem) => vo
 );
 
 const RecipeModal: React.FC<{ recipe: RecipeItem; onClose: () => void }> = ({ recipe, onClose }) => {
-  const [showAllSteps, setShowAllSteps] = useState(false);
+  const [showAllSteps, setShowAllSteps] = useState(true);
+
+  // Close with Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    const originalStyle = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, []);
 
   return (
-    <div className="fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={onClose}>
+    <div
+      className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-150"
+      onClick={onClose}
+    >
       <div
-        className="bg-white w-full sm:max-w-2xl sm:rounded-3xl rounded-t-3xl max-h-[92vh] overflow-y-auto shadow-2xl"
+        className="bg-white w-full sm:max-w-2xl rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] border border-slate-200"
         onClick={e => e.stopPropagation()}
       >
-        {/* Modal Header */}
-        <div className={`relative p-5 pb-4 text-white ${
+        {/* Modal Header - Fixed at Top */}
+        <div className={`shrink-0 relative p-5 pb-4 text-white shadow-xs ${
           recipe.category === 'primi' ? 'bg-gradient-to-br from-amber-500 to-orange-500' :
           recipe.category === 'secondi_pesce' ? 'bg-gradient-to-br from-blue-500 to-cyan-600' :
           recipe.category === 'secondi_carne' ? 'bg-gradient-to-br from-red-500 to-rose-600' :
@@ -116,24 +139,31 @@ const RecipeModal: React.FC<{ recipe: RecipeItem; onClose: () => void }> = ({ re
           'bg-gradient-to-br from-orange-500 to-amber-600'
         }`}>
           <button
-            onClick={onClose}
-            className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onClose();
+            }}
+            className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/20 hover:bg-black/35 active:scale-95 flex items-center justify-center transition-all cursor-pointer shadow-sm z-30"
+            title="Chiudi ricetta (Esc)"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5 text-white" />
           </button>
           <div className="text-xs font-bold opacity-80 mb-1">{recipe.categoryLabel}</div>
-          <h2 className="text-xl font-black leading-tight pr-10">{recipe.title}</h2>
+          <h2 className="text-xl font-black leading-tight pr-12">{recipe.title}</h2>
           <p className="text-sm opacity-90 mt-1">{recipe.subtitle}</p>
 
           {/* Quick Info Row */}
           <div className="flex items-center gap-4 mt-3 text-xs font-semibold opacity-90">
             <div className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" />{recipe.prepTimeMinutes + recipe.cookTimeMinutes} min</div>
             <div className="flex items-center gap-1"><ChefHat className="w-3.5 h-3.5" />{recipe.difficulty}</div>
-            <div className="flex items-center gap-1"><Users className="w-3.5 h-3.5" />{recipe.servings} persone</div>
+            <div className="flex items-center gap-1"><Users className="w-3.5 h-3.5" />{recipe.servings} {recipe.servings === 1 ? 'persona' : 'persone'}</div>
           </div>
         </div>
 
-        <div className="p-5 space-y-5">
+        {/* Scrollable Modal Body */}
+        <div className="p-5 sm:p-6 space-y-5 overflow-y-auto flex-1">
           {/* Macros Grid */}
           <div className="grid grid-cols-5 gap-2">
             <div className="text-center bg-orange-50 border border-orange-100 rounded-2xl py-2.5">
@@ -207,8 +237,9 @@ const RecipeModal: React.FC<{ recipe: RecipeItem; onClose: () => void }> = ({ re
             </div>
             {recipe.instructions.length > 3 && (
               <button
+                type="button"
                 onClick={() => setShowAllSteps(!showAllSteps)}
-                className="mt-3 flex items-center gap-1 text-emerald-600 text-sm font-bold hover:text-emerald-800 transition-colors"
+                className="mt-3 flex items-center gap-1 text-emerald-600 text-sm font-bold hover:text-emerald-800 transition-colors cursor-pointer"
               >
                 {showAllSteps ? (
                   <><ChevronUp className="w-4 h-4" /> Mostra meno</>
@@ -227,6 +258,25 @@ const RecipeModal: React.FC<{ recipe: RecipeItem; onClose: () => void }> = ({ re
             </div>
             <p className="text-xs text-emerald-700 leading-relaxed">{recipe.dietaryTips}</p>
           </div>
+        </div>
+
+        {/* Modal Footer - Fixed at Bottom */}
+        <div className="shrink-0 p-3.5 sm:p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-3">
+          <span className="text-xs text-slate-500 font-medium hidden sm:inline">
+            Premi <kbd className="px-1.5 py-0.5 bg-white border border-slate-300 rounded text-[10px] font-mono shadow-2xs">ESC</kbd> o clicca fuori per chiudere
+          </span>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onClose();
+            }}
+            className="w-full sm:w-auto px-6 py-2.5 bg-slate-900 hover:bg-slate-800 active:scale-95 text-white text-xs sm:text-sm font-extrabold rounded-xl shadow-xs transition-all cursor-pointer flex items-center justify-center gap-1.5 ml-auto"
+          >
+            <X className="w-4 h-4" />
+            <span>Chiudi Ricetta</span>
+          </button>
         </div>
       </div>
     </div>

@@ -758,4 +758,1526 @@ export const RECIPES_DATABASE: RecipeItem[] = [
     ],
     dietaryTips: 'Le lenticchie rosse sono tra i cibi con il più basso indice glicemico. La curcuma con il pepe nero aumenta la biodisponibilità della curcumina di 2000%. Ottima piatto unico.',
   },
+
+  {
+  "id": "pasta_pomodoro_datterino_basilico",
+  "title": "Spaghetti Integrali al Pomodoro Datterino e Basilico",
+  "subtitle": "Classico della dieta mediterranea ad alto potere antiossidante",
+  "category": "primi",
+  "categoryLabel": "🍝 Primo",
+  "prepTimeMinutes": 10,
+  "cookTimeMinutes": 12,
+  "difficulty": "Facile",
+  "servings": 2,
+  "estimatedCalories": 350,
+  "proteinGrams": 13,
+  "carbsGrams": 64,
+  "fatsGrams": 6,
+  "fiberGrams": 8,
+  "tags": [
+    "Basso Indice Glicemico",
+    "Licopene",
+    "Vegano",
+    "Cuore Sano"
+  ],
+  "suitablePathologies": [
+    "cholesterol",
+    "diabetes",
+    "hypertension",
+    "nafld"
+  ],
+  "dietType": "vegan",
+  "isGlutenFree": false,
+  "isLactoseFree": true,
+  "ingredients": [
+    {
+      "name": "Spaghetti di semola integrale",
+      "amount": "160g"
+    },
+    {
+      "name": "Pomodorini datterini dolci",
+      "amount": "300g"
+    },
+    {
+      "name": "Olio EVO",
+      "amount": "15ml (1 cucchiaio e mezzo)"
+    },
+    {
+      "name": "Aglio",
+      "amount": "1 spicchio"
+    },
+    {
+      "name": "Basilico fresco",
+      "amount": "8-10 foglie"
+    },
+    {
+      "name": "Sale integrale",
+      "amount": "q.b."
+    }
+  ],
+  "instructions": [
+    "Lava i datterini e tagliali a metà nel senso della lunghezza.",
+    "In una padella fai imbiondire l'aglio nell'olio EVO a fiamma dolce, poi eliminalo se preferisci.",
+    "Aggiungi i datterini e cuoci a fuoco vivo per 8-10 minuti, schiacciandoli leggermente con la forchetta per creare una salsa fresca.",
+    "Lessa gli spaghetti in abbondante acqua poco salata, scolali al dente tenendo mezzo mestolo di acqua di cottura.",
+    "Salta la pasta nella padella del sugo per 1 minuto, unendo le foglie di basilico spezzettate a mano.",
+    "Servi fumante con un filo di olio EVO a crudo."
+  ],
+  "dietaryTips": "Il licopene dei pomodori diventa fino a tre volte più biodisponibile quando cotto brevemente insieme all'olio extravergine d'oliva."
+},
+
+  {
+  "id": "riso_basmati_zucchine_curcuma",
+  "title": "Riso Basmati con Zucchine Trifolate e Curcuma",
+  "subtitle": "Primo leggero e profumato, altamente digeribile e antinfiammatorio",
+  "category": "primi",
+  "categoryLabel": "🍝 Primo",
+  "prepTimeMinutes": 10,
+  "cookTimeMinutes": 15,
+  "difficulty": "Facile",
+  "servings": 2,
+  "estimatedCalories": 340,
+  "proteinGrams": 8,
+  "carbsGrams": 68,
+  "fatsGrams": 5,
+  "fiberGrams": 4,
+  "tags": [
+    "Senza Glutine",
+    "Senza Lattosio",
+    "Antinfiammatorio",
+    "Digeribile"
+  ],
+  "suitablePathologies": [
+    "celiac",
+    "gerd_gastritis",
+    "ibs_fodmap",
+    "hypertension"
+  ],
+  "dietType": "vegan",
+  "isGlutenFree": true,
+  "isLactoseFree": true,
+  "ingredients": [
+    {
+      "name": "Riso Basmati",
+      "amount": "160g"
+    },
+    {
+      "name": "Zucchine medie",
+      "amount": "2 (circa 300g)"
+    },
+    {
+      "name": "Curcuma in polvere",
+      "amount": "1 cucchiaino pieno"
+    },
+    {
+      "name": "Pepe nero macinato",
+      "amount": "1 pizzico (attiva la curcumina)"
+    },
+    {
+      "name": "Olio EVO",
+      "amount": "15ml"
+    },
+    {
+      "name": "Scalogno",
+      "amount": "1 piccolo"
+    },
+    {
+      "name": "Prezzemolo fresco",
+      "amount": "q.b."
+    }
+  ],
+  "instructions": [
+    "Sciacqua il riso basmati per rimuovere l'eccesso di amido superficiale e lessalo in acqua bollente salata per 10-12 minuti.",
+    "Nel frattempo lava le zucchine e tagliale a dadini o a rondelle sottili.",
+    "In una padella salta lo scalogno tritato fine con l'olio EVO, poi unisci le zucchine a fiamma vivace per 6-8 minuti lasciandole croccanti.",
+    "Sciogli la curcuma e il pizzico di pepe in due cucchiai di acqua calda e versala sulle zucchine a fine cottura.",
+    "Scola il riso basmati, uniscilo in padella e salta il tutto per un minuto per amalgamare i profumi e il colore dorato.",
+    "Completa con prezzemolo fresco tritato e servi."
+  ],
+  "dietaryTips": "La curcumina associata alla piperina del pepe nero possiede spiccate azioni antiossidanti e protettive sul fegato e sul tratto gastrico."
+},
+
+  {
+  "id": "gnocchi_patate_ricotta_pomodoro",
+  "title": "Gnocchi di Patate al Sugo Leggero e Ricotta Vaccina",
+  "subtitle": "Piatto confortante della domenica, soffice e a moderato apporto lipidico",
+  "category": "primi",
+  "categoryLabel": "🍝 Primo",
+  "prepTimeMinutes": 10,
+  "cookTimeMinutes": 10,
+  "difficulty": "Facile",
+  "servings": 2,
+  "estimatedCalories": 380,
+  "proteinGrams": 14,
+  "carbsGrams": 64,
+  "fatsGrams": 7,
+  "fiberGrams": 4,
+  "tags": [
+    "Vegetariano",
+    "Confortante",
+    "Proteine Nobili"
+  ],
+  "suitablePathologies": [
+    "hypertension",
+    "gerd_gastritis"
+  ],
+  "dietType": "vegetarian",
+  "isGlutenFree": false,
+  "isLactoseFree": false,
+  "ingredients": [
+    {
+      "name": "Gnocchi di patate freschi",
+      "amount": "300g"
+    },
+    {
+      "name": "Passata di pomodoro rustica",
+      "amount": "250g"
+    },
+    {
+      "name": "Ricotta vaccina fresca magra",
+      "amount": "80g"
+    },
+    {
+      "name": "Olio EVO",
+      "amount": "10ml"
+    },
+    {
+      "name": "Basilico fresco",
+      "amount": "4-5 foglie"
+    },
+    {
+      "name": "Sale marino",
+      "amount": "q.b."
+    }
+  ],
+  "instructions": [
+    "Prepara un sugo leggero scaldando la passata di pomodoro con un filo d'olio, sale e basilico per circa 10 minuti.",
+    "Lavora la ricotta in una ciotolina con una forchetta per renderla cremosa.",
+    "Cuoci gli gnocchi in abbondante acqua bollente salata; scolali non appena salgono a galla con una schiumarola.",
+    "Condisci gli gnocchi caldi con il sugo di pomodoro.",
+    "Distribuisci nei piatti e completa con fiocchi di ricotta fresca e una foglia di basilico."
+  ],
+  "dietaryTips": "La ricotta apporta sieroproteine ad alto valore biologico e calcio biodisponibile, limitando l'impatto glicemico del pasto a base di patate."
+},
+
+  {
+  "id": "pasta_lenticchie_crema_broccoli",
+  "title": "Fusilli di Lenticchie Rosse con Crema di Broccoli",
+  "subtitle": "Primo piatto 100% vegetale, ricchissimo di proteine e senza glutine",
+  "category": "primi",
+  "categoryLabel": "🍝 Primo",
+  "prepTimeMinutes": 15,
+  "cookTimeMinutes": 15,
+  "difficulty": "Facile",
+  "servings": 2,
+  "estimatedCalories": 390,
+  "proteinGrams": 26,
+  "carbsGrams": 52,
+  "fatsGrams": 8,
+  "fiberGrams": 14,
+  "tags": [
+    "Senza Glutine",
+    "Vegano",
+    "High Protein",
+    "Alto Contenuto di Fibre"
+  ],
+  "suitablePathologies": [
+    "celiac",
+    "diabetes",
+    "cholesterol",
+    "nafld"
+  ],
+  "dietType": "vegan",
+  "isGlutenFree": true,
+  "isLactoseFree": true,
+  "ingredients": [
+    {
+      "name": "Pasta 100% farina di lenticchie rosse",
+      "amount": "140g"
+    },
+    {
+      "name": "Cimette di broccoli",
+      "amount": "300g"
+    },
+    {
+      "name": "Olio EVO",
+      "amount": "15ml"
+    },
+    {
+      "name": "Aglio",
+      "amount": "1 spicchio"
+    },
+    {
+      "name": "Peperoncino dolce o piccante",
+      "amount": "q.b."
+    },
+    {
+      "name": "Lievito alimentare in scaglie",
+      "amount": "10g",
+      "note": "opzionale per sapore di formaggio"
+    }
+  ],
+  "instructions": [
+    "Lava i broccoli e cuoci le cimette a vapore per 8-10 minuti fino a renderle tenere.",
+    "Frulla i tre quarti dei broccoli con olio EVO, sale, aglio scottato e un po' di acqua di cottura fino a ottenere una crema liscia.",
+    "Cuoci la pasta di lenticchie in acqua bollente salata seguendo i tempi indicati sulla confezione (circa 6-7 minuti).",
+    "Scola la pasta e mantecala con la crema di broccoli e le cimette tenute intere.",
+    "Servi con una spolverata di lievito alimentare o peperoncino a piacere."
+  ],
+  "dietaryTips": "La pasta di legumi è una straordinaria alternativa per i celiaci e per chi vuole aumentare l'apporto proteico senza ricorrere a cibi di origine animale."
+},
+
+  {
+  "id": "farro_freddo_tonno_pomodorini",
+  "title": "Insalata di Farro Perlato con Tonno e Pomodorini",
+  "subtitle": "Piatto unico fresco, bilanciato e perfetto anche da asporto per il lavoro",
+  "category": "primi",
+  "categoryLabel": "🍝 Primo",
+  "prepTimeMinutes": 15,
+  "cookTimeMinutes": 25,
+  "difficulty": "Facile",
+  "servings": 2,
+  "estimatedCalories": 430,
+  "proteinGrams": 27,
+  "carbsGrams": 56,
+  "fatsGrams": 10,
+  "fiberGrams": 9,
+  "tags": [
+    "Piatto Unico",
+    "Pranzo al Lavoro",
+    "Alto Contenuto di Fibre",
+    "Saziante"
+  ],
+  "suitablePathologies": [
+    "cholesterol",
+    "diabetes",
+    "hypertension"
+  ],
+  "dietType": "pescatarian",
+  "isGlutenFree": false,
+  "isLactoseFree": true,
+  "ingredients": [
+    {
+      "name": "Farro perlato",
+      "amount": "150g"
+    },
+    {
+      "name": "Tonno al naturale sgocciolato",
+      "amount": "160g (2 scatolette)"
+    },
+    {
+      "name": "Pomodorini ciliegino",
+      "amount": "150g"
+    },
+    {
+      "name": "Rucola fresca",
+      "amount": "40g"
+    },
+    {
+      "name": "Olive taggiasche",
+      "amount": "20g"
+    },
+    {
+      "name": "Olio EVO",
+      "amount": "15ml"
+    },
+    {
+      "name": "Succo di limone",
+      "amount": "q.b."
+    }
+  ],
+  "instructions": [
+    "Lessa il farro perlato in acqua bollente salata per circa 25 minuti; scolalo al dente e passalo sotto acqua fredda per arrestare la cottura.",
+    "Taglia i pomodorini a spicchi e la rucola a pezzetti.",
+    "In una ciotola capiente unisci il farro freddo, il tonno spezzettato, i pomodorini, le olive e la rucola.",
+    "Condisci con l'olio EVO, una spruzzata di succo di limone e un pizzico di sale e origano.",
+    "Mescola bene e lascia riposare in frigorifero per 20 minuti prima di gustare."
+  ],
+  "dietaryTips": "Il farro perlato contiene carboidrati a lento rilascio e una quantità elevata di magnesio, minerale essenziale per il sistema muscolare e la regolazione pressoria."
+},
+
+  {
+  "id": "couscous_verdure_ceci",
+  "title": "Couscous Integrale alle Verdure Mediterranee e Ceci",
+  "subtitle": "Piatto unico ricco di spezie aromatiche e fibre protettive per l'intestino",
+  "category": "primi",
+  "categoryLabel": "🍝 Primo",
+  "prepTimeMinutes": 15,
+  "cookTimeMinutes": 15,
+  "difficulty": "Facile",
+  "servings": 2,
+  "estimatedCalories": 395,
+  "proteinGrams": 15,
+  "carbsGrams": 65,
+  "fatsGrams": 8,
+  "fiberGrams": 11,
+  "tags": [
+    "Vegano",
+    "Dieta Mediterranea",
+    "Fibra Solubile"
+  ],
+  "suitablePathologies": [
+    "cholesterol",
+    "diabetes",
+    "hypertension"
+  ],
+  "dietType": "vegan",
+  "isGlutenFree": false,
+  "isLactoseFree": true,
+  "ingredients": [
+    {
+      "name": "Couscous integrale",
+      "amount": "140g"
+    },
+    {
+      "name": "Ceci lessati",
+      "amount": "150g"
+    },
+    {
+      "name": "Zucchina",
+      "amount": "1 media"
+    },
+    {
+      "name": "Carota",
+      "amount": "1 grande"
+    },
+    {
+      "name": "Peperone giallo",
+      "amount": "½"
+    },
+    {
+      "name": "Brodo vegetale bollente",
+      "amount": "180ml"
+    },
+    {
+      "name": "Olio EVO",
+      "amount": "15ml"
+    },
+    {
+      "name": "Menta fresca e cumino",
+      "amount": "q.b."
+    }
+  ],
+  "instructions": [
+    "Taglia tutte le verdure a piccoli cubetti regolari.",
+    "In una padella scalda l'olio EVO e salta le verdure a fuoco medio per 10 minuti, tenendole croccanti; unisci i ceci e un pizzico di cumino per gli ultimi 3 minuti.",
+    "Metti il couscous integrale in una ciotola, versa il brodo vegetale bollente, copri con un coperchio e lascia gonfiare per 5 minuti.",
+    "Sgrana il couscous con una forchetta aggiungendo un filo d'olio a crudo.",
+    "Unisci le verdure saltate e i ceci al couscous, profuma con foglie di menta fresca e servi tiepido o freddo."
+  ],
+  "dietaryTips": "La cottura per assorbimento del couscous preserva tutti i micronutrienti del cereale. L'aggiunta di ceci completa il profilo aminoacidico delle proteine."
+},
+
+  {
+  "id": "orata_al_cartoccio_erbe",
+  "title": "Orata al Cartoccio con Rosmarino, Aglio ed EVO",
+  "subtitle": "Cottura leggera e pulita che preserva la morbidezza e i micronutrienti",
+  "category": "secondi_pesce",
+  "categoryLabel": "🐟 Secondo Pesce",
+  "prepTimeMinutes": 10,
+  "cookTimeMinutes": 22,
+  "difficulty": "Facile",
+  "servings": 2,
+  "estimatedCalories": 230,
+  "proteinGrams": 35,
+  "carbsGrams": 1,
+  "fatsGrams": 9,
+  "fiberGrams": 0,
+  "tags": [
+    "Senza Glutine",
+    "Senza Lattosio",
+    "Ipocalorico",
+    "Cuore Sano"
+  ],
+  "suitablePathologies": [
+    "celiac",
+    "cholesterol",
+    "hypertension",
+    "diabetes",
+    "gerd_gastritis"
+  ],
+  "dietType": "pescatarian",
+  "isGlutenFree": true,
+  "isLactoseFree": true,
+  "ingredients": [
+    {
+      "name": "Filetti o orata intera pulita",
+      "amount": "400g"
+    },
+    {
+      "name": "Limone non trattato",
+      "amount": "1 a fette"
+    },
+    {
+      "name": "Pomodorini datterini",
+      "amount": "6-8"
+    },
+    {
+      "name": "Rosmarino e timo freschi",
+      "amount": "2 rametti"
+    },
+    {
+      "name": "Aglio",
+      "amount": "1 spicchio a fettine"
+    },
+    {
+      "name": "Olio EVO",
+      "amount": "15ml"
+    },
+    {
+      "name": "Sale e pepe",
+      "amount": "q.b."
+    }
+  ],
+  "instructions": [
+    "Preriscalda il forno a 190°C.",
+    "Stendi un foglio di carta forno su una teglia.",
+    "Adagia l'orata o i filetti, inserisci all'interno o sopra le fette di limone, l'aglio, i pomodorini spaccati e i rametti di erbe aromatiche.",
+    "Condisci con l'olio EVO, un pizzico di sale e una macinata di pepe.",
+    "Chiudi la carta forno formando un cartoccio sigillato per trattenere il vapore aromatico.",
+    "Inforna per 20-22 minuti. Apri il cartoccio a tavola per liberare i profumi e servi subito."
+  ],
+  "dietaryTips": "La cottura al cartoccio sfrutta l'umidità naturale del pesce evitando la formazione di composti tossici da bruciatura e non richiede grassi di cottura eccessivi."
+},
+
+  {
+  "id": "pesce_spada_alla_griglia_salmoriglio",
+  "title": "Trancio di Pesce Spada ai Ferri con Salmoriglio",
+  "subtitle": "Pesce nobile magrissimo arricchito dall'emulsione tradizionale siciliana",
+  "category": "secondi_pesce",
+  "categoryLabel": "🐟 Secondo Pesce",
+  "prepTimeMinutes": 10,
+  "cookTimeMinutes": 6,
+  "difficulty": "Facile",
+  "servings": 2,
+  "estimatedCalories": 240,
+  "proteinGrams": 34,
+  "carbsGrams": 1,
+  "fatsGrams": 10,
+  "fiberGrams": 0,
+  "tags": [
+    "High Protein",
+    "Senza Glutine",
+    "Senza Lattosio",
+    "Veloce"
+  ],
+  "suitablePathologies": [
+    "celiac",
+    "cholesterol",
+    "diabetes",
+    "nafld"
+  ],
+  "dietType": "pescatarian",
+  "isGlutenFree": true,
+  "isLactoseFree": true,
+  "ingredients": [
+    {
+      "name": "Tranci di pesce spada fresco",
+      "amount": "300g (2 fette)"
+    },
+    {
+      "name": "Succo di limone fresco",
+      "amount": "2 cucchiai"
+    },
+    {
+      "name": "Olio EVO",
+      "amount": "15ml"
+    },
+    {
+      "name": "Origano essiccato",
+      "amount": "1 cucchiaino"
+    },
+    {
+      "name": "Prezzemolo fresco tritato",
+      "amount": "1 cucchiaio"
+    },
+    {
+      "name": "Aglio grattugiato",
+      "amount": "½ spicchio",
+      "note": "facoltativo"
+    }
+  ],
+  "instructions": [
+    "Prepara il salmoriglio: in una tazza emulsiona energicamente con una forchetta l'olio EVO, il succo di limone, un cucchiaio d'acqua tiepida, l'origano, il prezzemolo e il sale.",
+    "Scalda molto bene una piastra in ghisa o una padella antiaderente scanalata.",
+    "Spennella leggermente i tranci di spada e cuocili sulla griglia caldissima per circa 2-3 minuti per lato.",
+    "Toglili subito dal fuoco non appena il centro è cotto per mantenerli morbidi e succosi.",
+    "Disponi nei piatti e versa sopra l'emulsione fresca di salmoriglio."
+  ],
+  "dietaryTips": "Il pesce spada è una fonte eccezionale di selenio e vitamina B12, nutrienti cardine per il buon funzionamento della tiroide e la sintesi dei globuli rossi."
+},
+
+  {
+  "id": "calamari_alla_piastra_prezzemolo",
+  "title": "Calamari Freschi alla Piastra con Limone e Prezzemolo",
+  "subtitle": "Secondo di mare leggerissimo, ipocalorico e a bassissimo contenuto di grassi",
+  "category": "secondi_pesce",
+  "categoryLabel": "🐟 Secondo Pesce",
+  "prepTimeMinutes": 10,
+  "cookTimeMinutes": 5,
+  "difficulty": "Facile",
+  "servings": 2,
+  "estimatedCalories": 190,
+  "proteinGrams": 30,
+  "carbsGrams": 3,
+  "fatsGrams": 5,
+  "fiberGrams": 0,
+  "tags": [
+    "Ipocalorico",
+    "High Protein",
+    "Senza Glutine",
+    "Senza Lattosio"
+  ],
+  "suitablePathologies": [
+    "celiac",
+    "diabetes",
+    "cholesterol"
+  ],
+  "dietType": "pescatarian",
+  "isGlutenFree": true,
+  "isLactoseFree": true,
+  "ingredients": [
+    {
+      "name": "Calamari freschi puliti",
+      "amount": "350g"
+    },
+    {
+      "name": "Olio EVO",
+      "amount": "15ml"
+    },
+    {
+      "name": "Limone",
+      "amount": "1"
+    },
+    {
+      "name": "Prezzemolo fresco",
+      "amount": "un mazzetto abbondante"
+    },
+    {
+      "name": "Aglio",
+      "amount": "1 spicchio"
+    },
+    {
+      "name": "Pepe nero",
+      "amount": "q.b."
+    }
+  ],
+  "instructions": [
+    "Asciuga benissimo le sacche e i tentacoli dei calamari con carta assorbente da cucina (fondamentale per non farli bollire sulla piastra).",
+    "Incidi delicatamente la superficie delle sacche a rombi senza tagliarle del tutto.",
+    "Scalda la piastra finché è rovente.",
+    "Cuoci i calamari per circa 2 minuti sul primo lato e 1-2 minuti sul secondo lato finché si arricciano e compaiono striature dorate.",
+    "Trasferiscili su un tagliere, taglia le sacche ad anelli larghi e condisci con un'emulsione di olio EVO, succo di limone, prezzemolo fresco tritato e pepe nero."
+  ],
+  "dietaryTips": "I calamari contengono pochissimi lipidi (meno del 2%) e apportano proteine nobili ad alto valore biologico, perfetti nei regimi di dimagrimento e tonificazione."
+},
+
+  {
+  "id": "trota_iridea_al_forno_mandorle",
+  "title": "Filetto di Trota Iridea al Forno con Lamelle di Mandorle",
+  "subtitle": "Pesce d'acqua dolce tenero e delicato, ricco di grassi polinsaturi salutari",
+  "category": "secondi_pesce",
+  "categoryLabel": "🐟 Secondo Pesce",
+  "prepTimeMinutes": 10,
+  "cookTimeMinutes": 15,
+  "difficulty": "Facile",
+  "servings": 2,
+  "estimatedCalories": 280,
+  "proteinGrams": 32,
+  "carbsGrams": 2,
+  "fatsGrams": 15,
+  "fiberGrams": 1,
+  "tags": [
+    "Omega 3",
+    "Senza Glutine",
+    "Senza Lattosio",
+    "Cuore Sano"
+  ],
+  "suitablePathologies": [
+    "celiac",
+    "cholesterol",
+    "hypertension",
+    "diabetes"
+  ],
+  "dietType": "pescatarian",
+  "isGlutenFree": true,
+  "isLactoseFree": true,
+  "ingredients": [
+    {
+      "name": "Filetti di trota iridea spinati",
+      "amount": "320g"
+    },
+    {
+      "name": "Mandorle a lamelle",
+      "amount": "20g"
+    },
+    {
+      "name": "Succo di limone",
+      "amount": "1 cucchiaio"
+    },
+    {
+      "name": "Timo fresco",
+      "amount": "2 rametti"
+    },
+    {
+      "name": "Olio EVO",
+      "amount": "10ml"
+    },
+    {
+      "name": "Sale e pepe bianco",
+      "amount": "q.b."
+    }
+  ],
+  "instructions": [
+    "Preriscalda il forno a 180°C in modalità ventilata.",
+    "Disponi i filetti di trota su una placca foderata con carta forno con la pelle rivolta verso il basso.",
+    "Spennella la superficie della polpa con il succo di limone e l'olio EVO, aggiungi un pizzico di sale e timo.",
+    "Distribuisci le mandorle a lamelle sulla superficie premendo leggermente per farle aderire.",
+    "Inforna per 12-15 minuti, gli ultimi 2 minuti con la funzione grill per dorare le mandorle.",
+    "Servi con un contorno di fagiolini o zucchine al vapore."
+  ],
+  "dietaryTips": "La trota iridea è un pesce a bassissimo accumulo di metalli pesanti rispetto ai grandi predatori marini, ricchissima di acidi grassi essenziali protettivi per il cuore."
+},
+
+  {
+  "id": "alici_scottate_origano_limone",
+  "title": "Alici Fresche Scottate con Origano e Limone",
+  "subtitle": "Regina del pesce azzurro locale, un tesoro naturale di Omega 3 e calcio",
+  "category": "secondi_pesce",
+  "categoryLabel": "🐟 Secondo Pesce",
+  "prepTimeMinutes": 12,
+  "cookTimeMinutes": 5,
+  "difficulty": "Facile",
+  "servings": 2,
+  "estimatedCalories": 220,
+  "proteinGrams": 28,
+  "carbsGrams": 1,
+  "fatsGrams": 11,
+  "fiberGrams": 0,
+  "tags": [
+    "Pesce Azzurro",
+    "Omega 3",
+    "Economico",
+    "Senza Glutine"
+  ],
+  "suitablePathologies": [
+    "celiac",
+    "cholesterol",
+    "hypertension",
+    "diabetes"
+  ],
+  "dietType": "pescatarian",
+  "isGlutenFree": true,
+  "isLactoseFree": true,
+  "ingredients": [
+    {
+      "name": "Alici fresche aperte a libro e spinate",
+      "amount": "300g"
+    },
+    {
+      "name": "Origano selvatico secco",
+      "amount": "1 cucchiaino"
+    },
+    {
+      "name": "Limone",
+      "amount": "1"
+    },
+    {
+      "name": "Aglio",
+      "amount": "1 spicchio a fettine sottili"
+    },
+    {
+      "name": "Olio EVO",
+      "amount": "15ml"
+    },
+    {
+      "name": "Prezzemolo",
+      "amount": "q.b."
+    }
+  ],
+  "instructions": [
+    "Lava delicatamente le alici già spinate e asciugale con carta da cucina.",
+    "In una padella antiaderente scalda l'olio EVO con le fettine di aglio.",
+    "Disponi le alici aperte in un unico strato e cuocile a fiamma viva per 2 minuti.",
+    "Girale con delicatezza con una paletta, spolvera con origano e una presa di sale e cuoci per un altro minuto.",
+    "Spegni la fiamma, bagna con succo di limone fresco e cospargi di prezzemolo.",
+    "Servi subito accompagnate da fette di pane integrale o patate novelle."
+  ],
+  "dietaryTips": "Le alici contengono elevate concentrazioni di calcio biodisponibile e acidi grassi EPA/DHA che abbassano i trigliceridi e contrastano l'infiammazione cellulare."
+},
+
+  {
+  "id": "gamberi_saltati_zucchine_zenzero",
+  "title": "Mazzancolle Saltate con Zucchine e Zenzero Fresco",
+  "subtitle": "Piatto leggero, profumato ed elegante pronto in meno di 15 minuti",
+  "category": "secondi_pesce",
+  "categoryLabel": "🐟 Secondo Pesce",
+  "prepTimeMinutes": 8,
+  "cookTimeMinutes": 7,
+  "difficulty": "Facile",
+  "servings": 2,
+  "estimatedCalories": 210,
+  "proteinGrams": 30,
+  "carbsGrams": 4,
+  "fatsGrams": 6,
+  "fiberGrams": 2,
+  "tags": [
+    "High Protein",
+    "Ipocalorico",
+    "Veloce",
+    "Senza Glutine"
+  ],
+  "suitablePathologies": [
+    "celiac",
+    "diabetes",
+    "nafld"
+  ],
+  "dietType": "pescatarian",
+  "isGlutenFree": true,
+  "isLactoseFree": true,
+  "ingredients": [
+    {
+      "name": "Code di mazzancolle o gamberi sgusciati",
+      "amount": "300g"
+    },
+    {
+      "name": "Zucchine novelle",
+      "amount": "2 medie"
+    },
+    {
+      "name": "Zenzero fresco grattugiato",
+      "amount": "1 cucchiaino"
+    },
+    {
+      "name": "Olio EVO",
+      "amount": "15ml"
+    },
+    {
+      "name": "Scorza di lime o limone",
+      "amount": "q.b."
+    },
+    {
+      "name": "Sale marino e pepe bianco",
+      "amount": "q.b."
+    }
+  ],
+  "instructions": [
+    "Taglia le zucchine a nastro o a bastoncini sottili.",
+    "In una padella antiaderente scalda l'olio EVO e salta le zucchine a fiamma viva per 3 minuti lasciandole croccanti.",
+    "Aggiungi le mazzancolle pulite e lo zenzero grattugiato.",
+    "Salta tutto insieme per 3-4 minuti finché i crostacei diventano opachi e rosati.",
+    "Spegni, aggiungi la scorza grattugiata di lime e un pizzico di sale.",
+    "Servi immediatamente ben caldo."
+  ],
+  "dietaryTips": "Lo zenzero aggiunge gingerolo ad azione termogenica e digestiva, abbinandosi perfettamente alla proteina magra dei crostacei."
+},
+
+  {
+  "id": "fesa_tacchino_alla_piastra_rosmarino",
+  "title": "Fesa di Tacchino ai Ferri con Zucchine al Vapore",
+  "subtitle": "Piatto principe per regimi ipocalorici e di tonificazione muscolare",
+  "category": "secondi_carne",
+  "categoryLabel": "🍗 Secondo Carne",
+  "prepTimeMinutes": 5,
+  "cookTimeMinutes": 10,
+  "difficulty": "Facile",
+  "servings": 2,
+  "estimatedCalories": 220,
+  "proteinGrams": 42,
+  "carbsGrams": 3,
+  "fatsGrams": 4,
+  "fiberGrams": 2,
+  "tags": [
+    "Magrissimo",
+    "High Protein",
+    "Senza Glutine",
+    "Senza Lattosio"
+  ],
+  "suitablePathologies": [
+    "celiac",
+    "cholesterol",
+    "diabetes",
+    "nafld",
+    "hypertension"
+  ],
+  "dietType": "omnivore",
+  "isGlutenFree": true,
+  "isLactoseFree": true,
+  "ingredients": [
+    {
+      "name": "Fette di fesa di tacchino",
+      "amount": "350g"
+    },
+    {
+      "name": "Zucchine",
+      "amount": "2 medie"
+    },
+    {
+      "name": "Rosmarino fresco",
+      "amount": "1 rametto"
+    },
+    {
+      "name": "Succo di limone",
+      "amount": "1 cucchiaio"
+    },
+    {
+      "name": "Olio EVO",
+      "amount": "10ml"
+    },
+    {
+      "name": "Sale alle erbe",
+      "amount": "q.b."
+    }
+  ],
+  "instructions": [
+    "Taglia le zucchine a rondelle e cuocile a vapore per 7-8 minuti.",
+    "Scalda molto bene una piastra antiaderente con qualche ago di rosmarino.",
+    "Cuoci le fette di fesa di tacchino per 2-3 minuti per lato a fiamma vivace, senza farle asciugare troppo.",
+    "Adagia la carne nel piatto insieme alle zucchine calde.",
+    "Condisci a crudo con l'olio EVO, il succo di limone e un pizzico di sale alle erbe."
+  ],
+  "dietaryTips": "La carne di tacchino contiene pochissimi grassi intramuscolari e un eccellente profilo aminoacidico ad alta digeribilità, ideale anche per la cena."
+},
+
+  {
+  "id": "fesa_vitello_ai_ferri_rucola",
+  "title": "Fesa di Vitello Magra ai Ferri con Rucola e Limone",
+  "subtitle": "Fonte eccezionale di ferro eme facilmente assimilabile ed elementi chelanti",
+  "category": "secondi_carne",
+  "categoryLabel": "🍗 Secondo Carne",
+  "prepTimeMinutes": 5,
+  "cookTimeMinutes": 6,
+  "difficulty": "Facile",
+  "servings": 2,
+  "estimatedCalories": 250,
+  "proteinGrams": 38,
+  "carbsGrams": 1,
+  "fatsGrams": 8,
+  "fiberGrams": 1,
+  "tags": [
+    "Ferro Eme",
+    "High Protein",
+    "Senza Glutine",
+    "Senza Lattosio"
+  ],
+  "suitablePathologies": [
+    "celiac",
+    "cholesterol",
+    "diabetes"
+  ],
+  "dietType": "omnivore",
+  "isGlutenFree": true,
+  "isLactoseFree": true,
+  "ingredients": [
+    {
+      "name": "Fettine di fesa di vitello magra",
+      "amount": "300g"
+    },
+    {
+      "name": "Rucola selvatica fresca",
+      "amount": "60g"
+    },
+    {
+      "name": "Limone",
+      "amount": "1"
+    },
+    {
+      "name": "Olio EVO",
+      "amount": "15ml"
+    },
+    {
+      "name": "Pepe nero macinato fresco",
+      "amount": "q.b."
+    },
+    {
+      "name": "Sale fino",
+      "amount": "q.b."
+    }
+  ],
+  "instructions": [
+    "Togli la carne dal frigorifero 10 minuti prima di cuocerla per evitare lo shock termico.",
+    "Scalda una bistecchiera a fuoco sostenuto.",
+    "Adagia le fettine e cuocile per circa 1-2 minuti per lato mantenendo l'interno morbido e rosato.",
+    "Componi il piatto con un letto di rucola fresca lavata e asciugata.",
+    "Poggia sopra la carne ben calda, condisci con l'olio EVO, abbondante succo di limone fresco e pepe nero."
+  ],
+  "dietaryTips": "La vitamina C presente nel succo di limone potenzia ulteriormente l'assorbimento del ferro eme presente nella carne di vitello."
+},
+
+  {
+  "id": "cosce_pollo_senza_pelle_erbe",
+  "title": "Fusi di Pollo al Forno Senza Pelle agli Aromi di Collina",
+  "subtitle": "Carne bianca succosa e saporita, naturalmente povera di grassi togliendo la pelle",
+  "category": "secondi_carne",
+  "categoryLabel": "🍗 Secondo Carne",
+  "prepTimeMinutes": 10,
+  "cookTimeMinutes": 35,
+  "difficulty": "Facile",
+  "servings": 2,
+  "estimatedCalories": 290,
+  "proteinGrams": 36,
+  "carbsGrams": 1,
+  "fatsGrams": 12,
+  "fiberGrams": 0,
+  "tags": [
+    "Senza Pelle",
+    "Senza Glutine",
+    "Senza Lattosio",
+    "Saporito"
+  ],
+  "suitablePathologies": [
+    "celiac",
+    "cholesterol",
+    "diabetes",
+    "hypertension"
+  ],
+  "dietType": "omnivore",
+  "isGlutenFree": true,
+  "isLactoseFree": true,
+  "ingredients": [
+    {
+      "name": "Fusi di pollo privati della pelle",
+      "amount": "4 fusi (circa 400g)"
+    },
+    {
+      "name": "Rosmarino, salvia e timo",
+      "amount": "un trito abbondante"
+    },
+    {
+      "name": "Aglio in polvere o 2 spicchi interi",
+      "amount": "q.b."
+    },
+    {
+      "name": "Vino bianco secco",
+      "amount": "30ml",
+      "note": "per sfumare"
+    },
+    {
+      "name": "Olio EVO",
+      "amount": "15ml"
+    },
+    {
+      "name": "Sale marino e pepe",
+      "amount": "q.b."
+    }
+  ],
+  "instructions": [
+    "Preriscalda il forno a 200°C.",
+    "Massaggia i fusi di pollo con l'olio EVO, il trito di erbe aromatiche, sale e pepe.",
+    "Disponili in una pirofila da forno senza sovrapporli.",
+    "Inforna per circa 20 minuti, poi bagna con il vino bianco e prosegui la cottura per altri 15 minuti finché la carne è ben cotta e dorata vicino all'osso.",
+    "Servi caldi accompagnati da insalata verde o verdure al forno."
+  ],
+  "dietaryTips": "Rimuovendo la pelle prima della cottura, i fusi di pollo perdono oltre il 55% dei grassi totali, preservando un'eccellente concentrazione di zinco e ferro."
+},
+
+  {
+  "id": "uova_strapazzate_avocado_toast",
+  "title": "Uova Strapazzate con Avocado e Pane Integrale",
+  "subtitle": "Colazione salata proteica o pasto veloce ad altissimo potere saziante",
+  "category": "secondi_veg",
+  "categoryLabel": "🥗 Secondo Veg",
+  "prepTimeMinutes": 5,
+  "cookTimeMinutes": 5,
+  "difficulty": "Facile",
+  "servings": 1,
+  "estimatedCalories": 380,
+  "proteinGrams": 20,
+  "carbsGrams": 28,
+  "fatsGrams": 18,
+  "fiberGrams": 6,
+  "tags": [
+    "Vegetariano",
+    "Grassi Buoni",
+    "Veloce",
+    "Saziante"
+  ],
+  "suitablePathologies": [
+    "diabetes",
+    "hypertension"
+  ],
+  "dietType": "vegetarian",
+  "isGlutenFree": false,
+  "isLactoseFree": true,
+  "ingredients": [
+    {
+      "name": "Uova bio intere",
+      "amount": "2"
+    },
+    {
+      "name": "Pane integrale di segale o frumento",
+      "amount": "50g (1 fetta spessa)"
+    },
+    {
+      "name": "Avocado maturo schiacciato",
+      "amount": "50g (circa un quarto)"
+    },
+    {
+      "name": "Olio EVO",
+      "amount": "5ml (1 cucchiaino)"
+    },
+    {
+      "name": "Sale marino, pepe e succo di limone",
+      "amount": "q.b."
+    }
+  ],
+  "instructions": [
+    "Tosta la fetta di pane integrale nel tostapane o in padella finché diventa croccante.",
+    "Schiaccia la polpa di avocado con una forchetta unendo poche gocce di succo di limone e un pizzico di sale; spalmala sulla fetta tostata.",
+    "In una ciotola sbatti leggermente le due uova con un pizzico di sale e pepe.",
+    "Scalda un cucchiaino d'olio in una padella antiaderente a fuoco medio-basso; versa le uova e muovile delicatamente con una spatola per 2 minuti fino a ottenere una consistenza cremosa.",
+    "Poggia le uova strapazzate calde sul pane con avocado e gusta subito."
+  ],
+  "dietaryTips": "La combinazione di acidi grassi monoinsaturi dell'avocado con le proteine nobili dell'uovo rallenta lo svuotamento gastrico, garantendo sazietà prolungata per ore."
+},
+
+  {
+  "id": "omelette_albumi_funghi",
+  "title": "Omelette Proteica di Albumi e Funghi Champignon",
+  "subtitle": "Ipocalorica e purissima di proteine, senza colesterolo aggiunto",
+  "category": "secondi_veg",
+  "categoryLabel": "🥗 Secondo Veg",
+  "prepTimeMinutes": 8,
+  "cookTimeMinutes": 8,
+  "difficulty": "Facile",
+  "servings": 1,
+  "estimatedCalories": 210,
+  "proteinGrams": 26,
+  "carbsGrams": 4,
+  "fatsGrams": 7,
+  "fiberGrams": 2,
+  "tags": [
+    "High Protein",
+    "Ipocalorico",
+    "Senza Glutine",
+    "Senza Lattosio"
+  ],
+  "suitablePathologies": [
+    "celiac",
+    "cholesterol",
+    "diabetes",
+    "nafld"
+  ],
+  "dietType": "vegetarian",
+  "isGlutenFree": true,
+  "isLactoseFree": true,
+  "ingredients": [
+    {
+      "name": "Albume d'uovo pastorizzato",
+      "amount": "180ml"
+    },
+    {
+      "name": "Uovo intero",
+      "amount": "1 (per sapore e vitamine liposolubili)"
+    },
+    {
+      "name": "Funghi champignon freschi affettati",
+      "amount": "120g"
+    },
+    {
+      "name": "Olio EVO",
+      "amount": "10ml"
+    },
+    {
+      "name": "Prezzemolo fresco",
+      "amount": "1 cucchiaio"
+    },
+    {
+      "name": "Aglio",
+      "amount": "½ spicchio"
+    },
+    {
+      "name": "Sale e pepe",
+      "amount": "q.b."
+    }
+  ],
+  "instructions": [
+    "In una padella antiaderente salta i funghi champignon con aglio, un filo d'olio, sale e prezzemolo per 5 minuti finché rilasciano l'acqua e dorano.",
+    "In una ciotola sbatti l'albume con l'uovo intero, sale e pepe con una forchetta.",
+    "Versa il composto di uova direttamente sopra i funghi in padella, abbassando la fiamma.",
+    "Copri con un coperchio per 3 minuti per cuocere uniformemente anche la parte superiore.",
+    "Ripiega l'omelette a mezzaluna e falla scivolare nel piatto."
+  ],
+  "dietaryTips": "Gli albumi d'uovo sono tra le fonti proteiche con il più alto valore biologico (pari a 100), privi di lipidi e purine."
+},
+
+  {
+  "id": "hummus_ceci_pinzimonio",
+  "title": "Hummus Cremoso di Ceci con Pinzimonio di Verdure",
+  "subtitle": "Piatto della tradizione levantina, ricco di fibre e grassi sani dal sesamo",
+  "category": "secondi_veg",
+  "categoryLabel": "🥗 Secondo Veg",
+  "prepTimeMinutes": 10,
+  "cookTimeMinutes": 0,
+  "difficulty": "Facile",
+  "servings": 2,
+  "estimatedCalories": 280,
+  "proteinGrams": 11,
+  "carbsGrams": 30,
+  "fatsGrams": 12,
+  "fiberGrams": 9,
+  "tags": [
+    "Vegano",
+    "Senza Glutine",
+    "Senza Lattosio",
+    "Antinfiammatorio"
+  ],
+  "suitablePathologies": [
+    "celiac",
+    "cholesterol",
+    "diabetes",
+    "hypertension"
+  ],
+  "dietType": "vegan",
+  "isGlutenFree": true,
+  "isLactoseFree": true,
+  "ingredients": [
+    {
+      "name": "Ceci lessati e scolati",
+      "amount": "250g"
+    },
+    {
+      "name": "Pasta di sesamo (Tahina)",
+      "amount": "20g (1 cucchiaio colmo)"
+    },
+    {
+      "name": "Succo di limone",
+      "amount": "2 cucchiai"
+    },
+    {
+      "name": "Olio EVO",
+      "amount": "15ml"
+    },
+    {
+      "name": "Acqua fredda",
+      "amount": "3-4 cucchiai"
+    },
+    {
+      "name": "Aglio",
+      "amount": "½ spicchio",
+      "note": "facoltativo"
+    },
+    {
+      "name": "Bastoncini di carote, cetrioli e finocchi",
+      "amount": "250g"
+    }
+  ],
+  "instructions": [
+    "Metti nel frullatore o robot da cucina i ceci, la tahina, il succo di limone, l'aglio schiacciato, un pizzico di sale e l'olio EVO.",
+    "Frulla aggiungendo l'acqua fredda poco alla volta fino a ottenere una crema liscia, vellutata e omogenea.",
+    "Trasferisci l'hummus in una ciotola, crea un solco al centro e aggiungi un filo d'olio a crudo e un pizzico di paprika dolce.",
+    "Servi con bastoncini di carote, cetrioli e finocchi freschi per intingere."
+  ],
+  "dietaryTips": "La tahina ricavata dai semi di sesamo è una delle fonti vegetali più ricche di calcio, magnesio e lignani protettivi per il cuore."
+},
+
+  {
+  "id": "bowl_fiocchi_latte_semi",
+  "title": "Bowl Proteica Fresca con Fiocchi di Latte e Semi di Zucca",
+  "subtitle": "Pasto veloce senza cottura, freschissimo e ricchissimo di caseine a lento rilascio",
+  "category": "secondi_veg",
+  "categoryLabel": "🥗 Secondo Veg",
+  "prepTimeMinutes": 5,
+  "cookTimeMinutes": 0,
+  "difficulty": "Facile",
+  "servings": 1,
+  "estimatedCalories": 260,
+  "proteinGrams": 25,
+  "carbsGrams": 8,
+  "fatsGrams": 12,
+  "fiberGrams": 3,
+  "tags": [
+    "Senza Cottura",
+    "High Protein",
+    "Senza Glutine",
+    "Veloce"
+  ],
+  "suitablePathologies": [
+    "celiac",
+    "diabetes",
+    "hypertension"
+  ],
+  "dietType": "vegetarian",
+  "isGlutenFree": true,
+  "isLactoseFree": false,
+  "ingredients": [
+    {
+      "name": "Fiocchi di latte magri",
+      "amount": "200g"
+    },
+    {
+      "name": "Cetriolo novello",
+      "amount": "1 piccolo a rondelle"
+    },
+    {
+      "name": "Pomodorini datterini",
+      "amount": "5-6 tagliati a metà"
+    },
+    {
+      "name": "Semi di zucca decorticati tostati",
+      "amount": "15g"
+    },
+    {
+      "name": "Olio EVO",
+      "amount": "5ml"
+    },
+    {
+      "name": "Origano o basilico fresco",
+      "amount": "q.b."
+    }
+  ],
+  "instructions": [
+    "Versa i fiocchi di latte in una ciotola.",
+    "Disponi sopra le rondelle di cetriolo e i pomodorini tagliati a metà.",
+    "Cospargi con i semi di zucca tostati per dare una nota croccante.",
+    "Condisci con un filo d'olio EVO, un pizzico di origano essiccato e pepe nero.",
+    "Consuma subito come pranzo fresco estivo o cena leggera."
+  ],
+  "dietaryTips": "I fiocchi di latte contengono caseina micellare, proteina che richiede diverse ore per essere digerita, rilasciando amminoacidi nel sangue in modo costante."
+},
+
+  {
+  "id": "tempeh_saltato_peperoni_tamari",
+  "title": "Tempeh Fermentato Saltato con Peperoni e Tamari",
+  "subtitle": "Proteina vegetale fermentata d'eccellenza, amica del microbiota intestinale",
+  "category": "secondi_veg",
+  "categoryLabel": "🥗 Secondo Veg",
+  "prepTimeMinutes": 10,
+  "cookTimeMinutes": 12,
+  "difficulty": "Facile",
+  "servings": 2,
+  "estimatedCalories": 310,
+  "proteinGrams": 23,
+  "carbsGrams": 14,
+  "fatsGrams": 16,
+  "fiberGrams": 7,
+  "tags": [
+    "Vegano",
+    "Fermentato",
+    "Senza Glutine",
+    "Microbiota Amico"
+  ],
+  "suitablePathologies": [
+    "celiac",
+    "cholesterol",
+    "diabetes",
+    "ibs_fodmap"
+  ],
+  "dietType": "vegan",
+  "isGlutenFree": true,
+  "isLactoseFree": true,
+  "ingredients": [
+    {
+      "name": "Tempeh naturale",
+      "amount": "200g"
+    },
+    {
+      "name": "Peperone rosso dolce",
+      "amount": "1 medio"
+    },
+    {
+      "name": "Zucchina",
+      "amount": "1"
+    },
+    {
+      "name": "Salsa Tamari (soia senza glutine)",
+      "amount": "2 cucchiai"
+    },
+    {
+      "name": "Olio EVO",
+      "amount": "15ml"
+    },
+    {
+      "name": "Semi di sesamo",
+      "amount": "1 cucchiaino"
+    }
+  ],
+  "instructions": [
+    "Taglia il panetto di tempeh a striscioline o cubetti spessi 1 cm.",
+    "In una padella antiaderente scotta il tempeh a secco per 3 minuti per lato fino a fargli assumere un bel colore dorato nocciola.",
+    "Aggiungi l'olio EVO e le verdure tagliate a listarelle sottili; cuoci a fuoco vivace per 5 minuti saltando continuamente.",
+    "Abbassa la fiamma, versa la salsa tamari e mescola bene per glassare il tempeh e le verdure.",
+    "Spegni, guarnisci con semi di sesamo e servi caldo."
+  ],
+  "dietaryTips": "La fermentazione dei fagioli di soia che dà origine al tempeh distrugge i fitati e rende i minerali e le proteine molto più digeribili rispetto alla soia non fermentata."
+},
+
+  {
+  "id": "pancake_avena_albume_mirtilli",
+  "title": "Pancake Proteici d'Avena e Albume con Mirtilli",
+  "subtitle": "Colazione fitness per eccellenza, senza zuccheri raffinati e soffice",
+  "category": "colazione_snack",
+  "categoryLabel": "🥣 Colazione",
+  "prepTimeMinutes": 5,
+  "cookTimeMinutes": 8,
+  "difficulty": "Facile",
+  "servings": 1,
+  "estimatedCalories": 270,
+  "proteinGrams": 22,
+  "carbsGrams": 35,
+  "fatsGrams": 4,
+  "fiberGrams": 5,
+  "tags": [
+    "High Protein",
+    "Colazione Fitness",
+    "Senza Lattosio",
+    "Senza Zuccheri Aggiunti"
+  ],
+  "suitablePathologies": [
+    "diabetes",
+    "cholesterol",
+    "hypertension"
+  ],
+  "dietType": "vegetarian",
+  "isGlutenFree": false,
+  "isLactoseFree": true,
+  "ingredients": [
+    {
+      "name": "Farina d'avena integrale o fiocchi frullati",
+      "amount": "45g"
+    },
+    {
+      "name": "Albume d'uovo",
+      "amount": "120ml"
+    },
+    {
+      "name": "Lievito per dolci",
+      "amount": "½ cucchiaino"
+    },
+    {
+      "name": "Cannella",
+      "amount": "1 pizzico"
+    },
+    {
+      "name": "Mirtilli freschi",
+      "amount": "60g"
+    },
+    {
+      "name": "Olio di cocco o EVO per ungere la padella",
+      "amount": "1 goccia"
+    }
+  ],
+  "instructions": [
+    "In una ciotola mescola energicamente con una frusta la farina d'avena, l'albume, il lievito e la cannella fino a ottenere una pastella liscia e densa.",
+    "Scalda un padellino antiaderente unto con una goccia d'olio rimossa con carta assorbente.",
+    "Versa un mestolino di pastella; incastona qualche mirtillo fresco nell'impasto ancora umido.",
+    "Cuoci a fiamma bassa per circa 2 minuti fino a quando compaiono le prime bollicine in superficie, poi gira il pancake e cuoci un altro minuto.",
+    "Impila i pancake e gustali caldi con i restanti mirtilli freschi."
+  ],
+  "dietaryTips": "L'avena fornisce carboidrati a basso indice glicemico mentre l'albume garantisce una dose proteica ottimale per iniziare la giornata senza cali energetici a metà mattina."
+},
+
+  {
+  "id": "overnight_oats_chia_mela",
+  "title": "Overnight Oats Cremoso con Semi di Chia e Mela alla Cannella",
+  "subtitle": "Si prepara la sera prima in 3 minuti e al mattino è pronto da mangiare fresco",
+  "category": "colazione_snack",
+  "categoryLabel": "🥣 Colazione",
+  "prepTimeMinutes": 5,
+  "cookTimeMinutes": 0,
+  "difficulty": "Facile",
+  "servings": 1,
+  "estimatedCalories": 310,
+  "proteinGrams": 11,
+  "carbsGrams": 48,
+  "fatsGrams": 8,
+  "fiberGrams": 9,
+  "tags": [
+    "Senza Cottura",
+    "Meal Prep",
+    "Fibra Solubile",
+    "Vegano"
+  ],
+  "suitablePathologies": [
+    "cholesterol",
+    "diabetes",
+    "hypertension"
+  ],
+  "dietType": "vegan",
+  "isGlutenFree": false,
+  "isLactoseFree": true,
+  "ingredients": [
+    {
+      "name": "Fiocchi d'avena piccoli",
+      "amount": "45g"
+    },
+    {
+      "name": "Semi di chia",
+      "amount": "10g (1 cucchiaino colmo)"
+    },
+    {
+      "name": "Bevanda d'avena o mandorla senza zuccheri",
+      "amount": "130ml"
+    },
+    {
+      "name": "Mela tagliata a cubetti piccoli",
+      "amount": "½ mela"
+    },
+    {
+      "name": "Cannella in polvere",
+      "amount": "1 cucchiaino"
+    }
+  ],
+  "instructions": [
+    "In un barattolo di vetro con coperchio unisci i fiocchi d'avena, i semi di chia e la cannella.",
+    "Versa la bevanda vegetale fredda e mescola bene con un cucchiaio.",
+    "Aggiungi i dadini di mela fresca in superficie.",
+    "Chiudi il barattolo e riponilo in frigorifero per tutta la notte (almeno 6 ore).",
+    "Al mattino l'avena e la chia avranno assorbito il liquido diventando un budino cremoso; mescola e gusta freddo o a temperatura ambiente."
+  ],
+  "dietaryTips": "I semi di chia creano un gel di mucillagini solubili che nutre la flora batterica intestinale e rallenta l'assorbimento degli zuccheri nel sangue."
+},
+
+  {
+  "id": "kefir_frutti_bosco_noci",
+  "title": "Bicchiere di Kefir con Frutti di Bosco e Noci Sgusciate",
+  "subtitle": "Spuntino ad altissima concentrazione di fermenti lattici vivi e grassi Omega 3",
+  "category": "colazione_snack",
+  "categoryLabel": "🥣 Spuntino",
+  "prepTimeMinutes": 3,
+  "cookTimeMinutes": 0,
+  "difficulty": "Facile",
+  "servings": 1,
+  "estimatedCalories": 210,
+  "proteinGrams": 10,
+  "carbsGrams": 16,
+  "fatsGrams": 12,
+  "fiberGrams": 4,
+  "tags": [
+    "Probiotico",
+    "Senza Glutine",
+    "Antiossidante",
+    "Veloce"
+  ],
+  "suitablePathologies": [
+    "celiac",
+    "cholesterol",
+    "hypertension",
+    "ibs_fodmap"
+  ],
+  "dietType": "vegetarian",
+  "isGlutenFree": true,
+  "isLactoseFree": true,
+  "ingredients": [
+    {
+      "name": "Kefir bianco magro naturale da bere",
+      "amount": "180ml"
+    },
+    {
+      "name": "Mirtilli o lamponi freschi",
+      "amount": "70g"
+    },
+    {
+      "name": "Gherigli di noci",
+      "amount": "15g (circa 3 noci intere)"
+    }
+  ],
+  "instructions": [
+    "Versa il kefir fresco in una tazza o bicchiere largo.",
+    "Aggiungi i frutti di bosco lavati e asciugati.",
+    "Spezza i gherigli di noce con le dita e cospargili in superficie.",
+    "Consuma subito con un cucchiaino come merenda o spuntino di metà mattina."
+  ],
+  "dietaryTips": "Il kefir contiene oltre 30 ceppi diversi di batteri e lieviti probiotici benefici, capaci di colonizzare l'intestino e rinforzare le difese immunitarie."
+}
 ];
