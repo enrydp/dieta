@@ -37,7 +37,8 @@ export const FoodDatabaseModal: React.FC<FoodDatabaseModalProps> = ({
     { id: 'vegetables', label: 'Verdure' },
     { id: 'fruits', label: 'Frutta' },
     { id: 'nuts_seeds', label: 'Frutta Secca' },
-    { id: 'oils_fats', label: 'Oli & Grassi' }
+    { id: 'oils_fats', label: 'Oli & Grassi' },
+    { id: 'beverages', label: 'Bevande' }
   ];
 
   const filteredFoods = FOODS_DATABASE.filter(food => {

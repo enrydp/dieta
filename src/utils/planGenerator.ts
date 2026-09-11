@@ -99,7 +99,8 @@ export function isFoodAllowed(food: FoodItem, profile: UserProfile): boolean {
       nameLower.includes('bresaola') || 
       nameLower.includes('parmigiano') || 
       nameLower.includes('grana') || 
-      nameLower.includes('stagionat')
+      nameLower.includes('stagionat') ||
+      nameLower.includes('affumicat')
     )) return false;
 
     // 11. Sesamo
@@ -263,27 +264,252 @@ export function generateDailyPlan(profile: UserProfile, targets: MacroTargets, d
     const mealFoods: MealFoodItem[] = [];
 
     if (slot.category === 'breakfast') {
-      // Colazione: Avena/pane + Yogurt/Uova + Frutta/Noci
-      const breakfastGrain = grains.find(g => g.id.includes('avena')) || grains[0];
-      const breakfastProt = dairy.find(d => d.id.includes('yogurt')) || eggs.find(e => e.id.includes('albume')) || dairy[0];
-      const breakfastFruit = fruits.find(f => f.id.includes('mirtilli') || f.id.includes('banana')) || fruits[0];
-      const breakfastNut = nuts[0];
+      // === COLAZIONE DINAMICA: 8 template ruotanti (dolci + salati) ===
+      // Usiamo l'offset (dayIndex + seed) per variare ogni giorno e ogni rigenerazione
+      const bOffset = offset;
 
-      if (breakfastGrain) {
-        // Grammatura proporzionata ai carbs del pasto
-        const g = Math.max(30, Math.min(100, Math.round((mealTargetCarbs * 0.6 / breakfastGrain.carbs) * 100)));
-        mealFoods.push({ food: breakfastGrain, grams: g });
+      // --- Pool alimenti per colazione ---
+      // Pani e base croccante
+      const bBreads = allowed.filter(f =>
+        f.id.includes('pane') || f.id.includes('fette_biscottate') ||
+        f.id.includes('gallette') || f.id.includes('wasa') || f.id.includes('farro')
+      );
+      // Avena e cereali da porridge
+      const bOats = allowed.filter(f => f.id.includes('avena') || f.id.includes('muesli'));
+      // Latticini proteici (yogurt, ricotta, fiocchi, formaggio spalmabile)
+      const bDairy = allowed.filter(f =>
+        f.id.includes('yogurt') || f.id.includes('fiocchi') ||
+        f.id.includes('ricotta') || f.id.includes('kefir') ||
+        f.id.includes('quark') || f.id.includes('formaggio_spalmabile')
+      );
+      // Uova o alternativa vegana
+      const bEggs = allowed.filter(f =>
+        f.id.includes('uov') || f.id.includes('albume') ||
+        f.id.includes('frittata') || f.id.includes('strapazzat')
+      );
+      const bTofu = allowed.filter(f => f.id.includes('tofu_strapazzato'));
+      // Proteine salate affettabili (bresaola, prosciutto cotto, fesa tacchino, salmone affumicato)
+      const bSaltedProteins = allowed.filter(f =>
+        f.id.includes('bresaola') || f.id.includes('prosciutto_cotto') ||
+        f.id.includes('fesa_tacchino') || f.id.includes('salmone_affumicato') ||
+        f.id.includes('prosciutto_crudo')
+      );
+      // Avocado
+      const bAvocado = allowed.find(f => f.id === 'avocado_fresco');
+      // Frutta fresca varia
+      const bFruits = allowed.filter(f => f.category === 'fruits' &&
+        !f.id.includes('confettura') && !f.id.includes('miele')
+      );
+      // Condimenti dolci (confettura, miele)
+      const bSweetCondiments = allowed.filter(f =>
+        f.id.includes('confettura') || f.id.includes('miele')
+      );
+      // Frutta secca e semi
+      const bNuts = allowed.filter(f => f.category === 'nuts_seeds' &&
+        !f.id.includes('cioccolato')
+      );
+      const bChocolate = allowed.find(f => f.id === 'cioccolato_fondente_85');
+      const bOil = oils.length ? oils[0] : null;
+      // Verdure fresche per colazione salata (pomodorini, spinaci, cetrioli)
+      const bVeggies = allowed.filter(f =>
+        f.id.includes('pomodorini') || f.id.includes('spinac') || f.id.includes('cetrioli')
+      );
+
+      // Helper: seleziona con rotazione
+      const pick = <T>(arr: T[], i: number): T | null => arr.length ? arr[i % arr.length] : null;
+
+      // --- Definizione dei 8 template colazione ---
+      // 0: Porridge avena dolce con frutti di bosco e frutta secca
+      // 1: Toast salato (pane integrale) con uova strapazzate / albumi e pomodorini
+      // 2: Avocado toast salato con salmone affumicato o affettato magro
+      // 3: Fette biscottate/pane con ricotta o yogurt greco e confettura/miele
+      // 4: Toast salato con formaggio spalmabile light e verdure fresche + EVO
+      // 5: Muesli/bowl con kefir o yogurt, frutta fresca e cioccolato fondente
+      // 6: Pane con bresaola/fesa tacchino, avocado e limone (salato proteico)
+      // 7: Gallette/wasa con burro mandorle o ricotta, frutta fresca e noci
+
+      const templateIndex = bOffset % 8;
+
+      switch (templateIndex) {
+        case 0: {
+          // Porridge avena con frutti di bosco, frutta secca
+          const oat = pick(bOats, bOffset);
+          const dairyEl = pick(bDairy, bOffset);
+          const fruit = pick(bFruits, bOffset);
+          const nut = pick(bNuts, bOffset);
+          if (oat) {
+            const g = Math.max(40, Math.min(80, Math.round((mealTargetCarbs * 0.65 / oat.carbs) * 100)));
+            mealFoods.push({ food: oat, grams: g });
+          }
+          if (dairyEl) {
+            const g = Math.max(100, Math.min(200, Math.round((mealTargetProt * 0.7 / dairyEl.protein) * 100)));
+            mealFoods.push({ food: dairyEl, grams: g });
+          }
+          if (fruit) mealFoods.push({ food: fruit, grams: fruit.standardServingGrams });
+          if (nut && mealTargetFats > 10) mealFoods.push({ food: nut, grams: 15 });
+          break;
+        }
+        case 1: {
+          // Toast salato con uova strapazzate / albumi e pomodorini
+          const bread = pick(bBreads, bOffset) || pick(grains.filter(f => f.id.includes('pane')), bOffset);
+          const eggItem = pick(bEggs, bOffset) ||
+            (profile.dietType === 'vegan' ? pick(bTofu, 0) : null);
+          const veggie = pick(bVeggies, bOffset);
+          if (bread) {
+            const g = Math.max(40, Math.min(80, Math.round((mealTargetCarbs * 0.7 / bread.carbs) * 100)));
+            mealFoods.push({ food: bread, grams: g });
+          }
+          if (eggItem) {
+            const g = Math.max(80, Math.min(200, Math.round((mealTargetProt * 0.75 / eggItem.protein) * 100)));
+            mealFoods.push({ food: eggItem, grams: g });
+          }
+          if (veggie) mealFoods.push({ food: veggie, grams: 80 });
+          if (bOil && mealTargetFats > 8) mealFoods.push({ food: bOil, grams: 8 });
+          break;
+        }
+        case 2: {
+          // Avocado toast con salmone affumicato o affettato magro salato
+          const bread = pick(bBreads, bOffset + 1) || pick(grains, bOffset);
+          const saltedProt = pick(bSaltedProteins, bOffset);
+          const vegan_prot = pick(bTofu, 0);
+          const protItem = (profile.dietType === 'vegan') ? vegan_prot : saltedProt;
+          if (bread) {
+            const g = Math.max(40, Math.min(80, Math.round((mealTargetCarbs * 0.65 / bread.carbs) * 100)));
+            mealFoods.push({ food: bread, grams: g });
+          }
+          if (bAvocado) mealFoods.push({ food: bAvocado, grams: 80 });
+          if (protItem) {
+            const g = Math.max(50, Math.min(100, Math.round((mealTargetProt * 0.6 / protItem.protein) * 100)));
+            mealFoods.push({ food: protItem, grams: g });
+          }
+          const tomato = bVeggies.find(v => v.id.includes('pomodorini'));
+          if (tomato) mealFoods.push({ food: tomato, grams: 70 });
+          break;
+        }
+        case 3: {
+          // Fette biscottate/pane con ricotta/yogurt greco e confettura o miele
+          const base = grains.find(f => f.id.includes('fette_biscottate')) ||
+            pick(bBreads, bOffset + 2) || pick(grains, bOffset);
+          const cream = bDairy.find(f => f.id.includes('ricotta') || f.id.includes('yogurt')) ||
+            pick(bDairy, bOffset + 1);
+          const sweet = pick(bSweetCondiments, bOffset);
+          const fruit = pick(bFruits, bOffset + 1);
+          if (base) {
+            const g = Math.max(35, Math.min(70, Math.round((mealTargetCarbs * 0.55 / base.carbs) * 100)));
+            mealFoods.push({ food: base, grams: g });
+          }
+          if (cream) {
+            const g = Math.max(100, Math.min(200, Math.round((mealTargetProt * 0.65 / cream.protein) * 100)));
+            mealFoods.push({ food: cream, grams: g });
+          }
+          if (sweet) mealFoods.push({ food: sweet, grams: sweet.standardServingGrams });
+          if (fruit) mealFoods.push({ food: fruit, grams: fruit.standardServingGrams });
+          break;
+        }
+        case 4: {
+          // Toast salato con formaggio spalmabile light, verdure fresche ed EVO
+          const bread = pick(bBreads, bOffset + 3) || pick(grains.filter(f => f.id.includes('pane')), bOffset);
+          const cheese = bDairy.find(f => f.id.includes('formaggio_spalmabile')) || pick(bDairy, bOffset + 2);
+          const veggie1 = bVeggies.find(v => v.id.includes('pomodorini'));
+          const veggie2 = bVeggies.find(v => v.id.includes('cetrioli'));
+          if (bread) {
+            const g = Math.max(40, Math.min(80, Math.round((mealTargetCarbs * 0.70 / bread.carbs) * 100)));
+            mealFoods.push({ food: bread, grams: g });
+          }
+          if (cheese) {
+            const g = Math.max(60, Math.min(120, Math.round((mealTargetProt * 0.65 / cheese.protein) * 100)));
+            mealFoods.push({ food: cheese, grams: g });
+          }
+          if (veggie1) mealFoods.push({ food: veggie1, grams: 80 });
+          if (veggie2) mealFoods.push({ food: veggie2, grams: 60 });
+          if (bOil && mealTargetFats > 8) mealFoods.push({ food: bOil, grams: 10 });
+          break;
+        }
+        case 5: {
+          // Muesli / Smoothie bowl con kefir/yogurt, frutta fresca e cioccolato fondente
+          const oat = pick(bOats, bOffset + 1);
+          const kefirEl = bDairy.find(f => f.id.includes('kefir') || f.id.includes('yogurt')) ||
+            pick(bDairy, bOffset + 3);
+          const fruit1 = pick(bFruits, bOffset + 2);
+          const fruit2 = pick(bFruits, bOffset + 3);
+          if (oat) {
+            const g = Math.max(40, Math.min(70, Math.round((mealTargetCarbs * 0.5 / oat.carbs) * 100)));
+            mealFoods.push({ food: oat, grams: g });
+          }
+          if (kefirEl) {
+            const g = Math.max(100, Math.min(180, Math.round((mealTargetProt * 0.65 / kefirEl.protein) * 100)));
+            mealFoods.push({ food: kefirEl, grams: g });
+          }
+          if (fruit1) mealFoods.push({ food: fruit1, grams: fruit1.standardServingGrams });
+          if (fruit2 && fruit2.id !== fruit1?.id) mealFoods.push({ food: fruit2, grams: 50 });
+          if (bChocolate) mealFoods.push({ food: bChocolate, grams: 15 });
+          break;
+        }
+        case 6: {
+          // Pane con bresaola/fesa tacchino, avocado, limone (salato proteico)
+          const bread = pick(bBreads, bOffset + 4) || pick(grains.filter(f => f.id.includes('pane')), bOffset + 1);
+          const lean_salted = bSaltedProteins.find(f =>
+            f.id.includes('bresaola') || f.id.includes('fesa_tacchino')
+          ) || pick(bSaltedProteins, bOffset + 1);
+          const vegan_prot = pick(bTofu, 0);
+          const protItem = (profile.dietType === 'vegan') ? vegan_prot : lean_salted;
+          if (bread) {
+            const g = Math.max(40, Math.min(80, Math.round((mealTargetCarbs * 0.70 / bread.carbs) * 100)));
+            mealFoods.push({ food: bread, grams: g });
+          }
+          if (protItem) {
+            const g = Math.max(50, Math.min(100, Math.round((mealTargetProt * 0.65 / protItem.protein) * 100)));
+            mealFoods.push({ food: protItem, grams: g });
+          }
+          if (bAvocado) mealFoods.push({ food: bAvocado, grams: 70 });
+          const nut = pick(bNuts, bOffset + 1);
+          if (nut && mealTargetFats > 12) mealFoods.push({ food: nut, grams: 15 });
+          break;
+        }
+        case 7:
+        default: {
+          // Gallette/Wasa con burro mandorle o ricotta, frutta fresca e noci
+          const crispy = allowed.find(f => f.id.includes('gallette') || f.id.includes('wasa')) ||
+            grains.find(f => f.id.includes('fette_biscottate')) ||
+            pick(grains, bOffset + 2);
+          const spread = allowed.find(f => f.id.includes('crema_mandorle') || f.id.includes('burro_arachidi')) ||
+            bDairy.find(f => f.id.includes('ricotta')) ||
+            pick(bDairy, bOffset + 4);
+          const fruit = pick(bFruits, bOffset + 4);
+          const nut = pick(bNuts, bOffset + 2);
+          if (crispy) {
+            const g = Math.max(35, Math.min(70, Math.round((mealTargetCarbs * 0.6 / crispy.carbs) * 100)));
+            mealFoods.push({ food: crispy, grams: g });
+          }
+          if (spread) {
+            const g = Math.max(20, Math.min(80, Math.round((mealTargetProt * 0.55 / spread.protein) * 100)));
+            mealFoods.push({ food: spread, grams: g });
+          }
+          if (fruit) mealFoods.push({ food: fruit, grams: fruit.standardServingGrams });
+          if (nut && mealTargetFats > 12) mealFoods.push({ food: nut, grams: 15 });
+          break;
+        }
       }
-      if (breakfastProt) {
-        const g = Math.max(100, Math.min(250, Math.round((mealTargetProt * 0.7 / breakfastProt.protein) * 100)));
-        mealFoods.push({ food: breakfastProt, grams: g });
+
+      // Fallback: se il template ha prodotto 0 alimenti (es. tutti filtrati per allergie),
+      // usa la logica base avena + yogurt + frutta
+      if (mealFoods.length === 0) {
+        const fallbackGrain = pick(bOats, bOffset) || pick(grains, bOffset);
+        const fallbackProt = pick(bDairy, bOffset) || pick(bEggs, bOffset);
+        const fallbackFruit = pick(bFruits, bOffset);
+        const fallbackNut = pick(bNuts, bOffset);
+        if (fallbackGrain) {
+          const g = Math.max(40, Math.min(80, Math.round((mealTargetCarbs * 0.6 / fallbackGrain.carbs) * 100)));
+          mealFoods.push({ food: fallbackGrain, grams: g });
+        }
+        if (fallbackProt) {
+          const g = Math.max(100, Math.min(200, Math.round((mealTargetProt * 0.7 / fallbackProt.protein) * 100)));
+          mealFoods.push({ food: fallbackProt, grams: g });
+        }
+        if (fallbackFruit) mealFoods.push({ food: fallbackFruit, grams: fallbackFruit.standardServingGrams });
+        if (fallbackNut && mealTargetFats > 15) mealFoods.push({ food: fallbackNut, grams: 15 });
       }
-      if (breakfastFruit) {
-        mealFoods.push({ food: breakfastFruit, grams: breakfastFruit.standardServingGrams });
-      }
-      if (breakfastNut && mealTargetFats > 15) {
-        mealFoods.push({ food: breakfastNut, grams: 15 });
-      }
+
     } else if (slot.category === 'lunch') {
       // Pranzo: Primo + Secondo + Contorno + Olio EVO
       const proteinFood = lunchProteins[dayIndex % lunchProteins.length];
